@@ -18,7 +18,7 @@ As this package is not yet registered, you must install it by using
 
 ```julia
 using Pkg
-Pkg.add("git@github.com:CodeLenz/Giffndof.jl.git")
+Pkg.add("https://github.com/CodeLenz/Giffndof.jl.git")
 ```
 
 *** Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented ***
