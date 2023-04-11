@@ -83,6 +83,7 @@ load_data[2] = [3*im/2; -3*im/2; -4.0; 4.0]
 The complete example is 
 
 ```julia
+using Giffndof
 function Example_exponential(t0 =0.0)
 
     # Mass matrix
@@ -143,6 +144,7 @@ function Example_exponential(t0 =0.0)
 One can generate the visualization for $y(t)$
 
 ```julia
+  using Plots
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
@@ -189,6 +191,7 @@ load_data[2] = [0.0; 0.0; 10.0; -1.0]
 The complete example is 
 
 ```julia
+using Giffndof
 function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -228,6 +231,7 @@ end
 One can generate the visualization for $y(t)$
 
 ```julia
+  using Plots  
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
@@ -273,6 +277,7 @@ load_data[2] = [1.0; 1.0; -1.0; 5.0]
 The complete example is 
 
 ```julia
+using Giffndof
 function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 
@@ -314,6 +319,7 @@ function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 One can generate the visualization for $y(t)$
 
 ```julia
+  using Plots
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
@@ -359,6 +365,7 @@ load_data[2] = [1.0; 0.0; 0.0; 1.0; -1.0; 0.0; 0.0; 5.0]
 The complete example is 
 
 ```julia
+using Giffndof
 function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -398,6 +405,7 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
  One can generate the visualization for $y(t)$
 
 ```julia
+  using Plots  
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
