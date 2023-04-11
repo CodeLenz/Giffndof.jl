@@ -34,11 +34,8 @@ include("functions_exponential.jl")
 """
 function Solve_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
                            U0::AbstractVector{T},V0::AbstractVector{T}, 
-                           load_data::Dict{Int64,Vector{ComplexF64}}; tspan=(0.0,10.0),t0=0.0) where T
+                           load_data::Dict{Int64,Vector{ComplexF64}}; t0=0.0) where T
 
-    # Basic assertions
-    @assert tspan[1] < tspan[2] "Solve_exponential:: Initial time must be smaller than the final time"
-    @assert tspan[1] <= t0 <= tspan[2] "Solve_exponential:: t0 must be in tspan"
     
     # Pre-process - cache some expensive operations
     sol_jk, beta_jk = Process_exponential(M, C, K, load_data)
