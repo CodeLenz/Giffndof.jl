@@ -1,6 +1,5 @@
 
 # Load solution procedures
-include("../common/homo.jl")
 include("functions_exponential.jl")
 
 """
