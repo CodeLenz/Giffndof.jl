@@ -6,6 +6,7 @@
 # april 2023
 # eduardo.cardoso@udesc.br
 #######################################################################################
+using LinearAlgebra
 
 # Load solution procedures
 include("../common/homo.jl")

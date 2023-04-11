@@ -22,6 +22,12 @@
 
  load_data -> dictionary with key j (gl) and data [c_j1; w_j1; c_j2; w_j2; ... c_jnk; w_jnk]
 =#
+#######################################################################################
+# The objective is to show the computer implementation of the Equations derived in the 
+# manuscript XXXXXXXXXXXXXXX. There is no concern with efficiency!
+#
+# eduardo.cardoso@udesc.br
+#######################################################################################
 
 """
   Pre-process data to avoid some computations when evaluating the 
@@ -245,3 +251,4 @@ function dy_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::
     return outp
 
 end
+
