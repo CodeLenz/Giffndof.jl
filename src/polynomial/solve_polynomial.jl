@@ -33,13 +33,9 @@ include("functions_polynomial.jl")
 """
 function Solve_polynomial(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
                           U0::AbstractVector{T},V0::AbstractVector{T}, 
-                          load_data::OrderedDict{Int64,Vector{Float64}}; tspan=(0.0,10.0),t0=0.0) where T
+                          load_data::OrderedDict{Int64,Vector{Float64}}; t0=0.0) where T
 
    
-    # Basic assertions
-    @assert tspan[1] < tspan[2] "Solve_polynomial:: Initial time must be smaller than the final time"
-    @assert tspan[1] <= t0 <= tspan[2] "Solve_polynomial:: t0 must be in tspan"
-      
     # Evaluate F211 - Equation 65
     chol = cholesky(M)
     Kb = chol\K
