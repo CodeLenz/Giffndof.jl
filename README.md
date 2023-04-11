@@ -29,7 +29,7 @@ using Pkg
 Pkg.add("https://github.com/CodeLenz/Giffndof.jl.git")
 ```
 
-*** Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented ***
+***Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented***
 
 There are four main methods being exported, depending on the type
 of excitation:
