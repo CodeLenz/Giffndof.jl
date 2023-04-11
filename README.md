@@ -14,8 +14,7 @@ using Pkg
 Pkg.add("git@github.com:CodeLenz/Giffndof.jl.git")
 ```
 
-
-The examples of the manuscript are used to exemplify the package
+Some examples of the manuscript are used to exemplify the package
 
 ## Example 1
 
@@ -90,4 +89,153 @@ function Example_exponential(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 end
 
+```
+
+## Example 2
+
+```julia
+function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    # Loading
+    load_data = OrderedDict{Int64,Vector{Float64}}()
+
+    # 10t - t^2 at DOF 2
+    #        DOF     c20  c21   c22   t2
+    load_data[2] = [0.0 ; 0.0; 10.0; -1.0]
+
+
+    #  Main function -> solve the problem
+    y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+
+    # Discrete times to make the plot
+    tt = tspan[1]:dt:tspan[2]
+       
+    # Reshape to plot
+    ndofs = size(M,1)
+    yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
+ 
+    # Plot
+    display(plot(tt,yy))
+ 
+    # Return y, yh and yp
+    return y, yh, yp
+
+end
+```
+
+## Example 3
+
+```julia
+function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    #
+    # Loading 
+    #
+    # g_2(t) = delta(t-1) - delta(t-5)
+    #
+    load_data = OrderedDict{Int64,Vector{Float64}}()
+    #
+    #               c_20  t_20  c_21  t_21
+    load_data[2] = [1.0 ; 1.0; -1.0 ; 5.0]
+
+    #  Main function -> solve the problem
+    y = Solve_dirac(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+
+    # Discrete times to make the plot
+    tt = tspan[1]:dt:tspan[2]
+       
+    # Reshape to plot
+    ndofs = size(M,1)
+    yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
+ 
+    # Plot
+    display(plot(tt,yy))
+ 
+    # Return y
+    return y
+
+end
+```
+
+## Example 4
+```julia
+function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    #
+    # Loading (1 + 0*t + 0*t^2) H(t-1) - (1 + 0*t + 0*t^2)H(t-5)
+    #
+    load_data = OrderedDict{Int64,Vector{Float64}}()
+
+    #   c_j00 c_j01 c_j02  t_jk .... c_j(nk)0 c_j(nk)1 c_j(nk)2 t_j(nk)
+    load_data[2] = [1.0; 0.0; 0.0; 1.0 ; -1.0; 0.0; 0.0; 5.0 ]
+
+    #  Main function -> solve the problem
+    y = Solve_heaviside(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+
+    # Discrete times to make the plot
+    tt = tspan[1]:dt:tspan[2]
+        
+    # Reshape to plot
+    ndofs = size(M,1)
+    yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
+  
+    # Plot
+    display(plot(tt,yy))
+  
+    # Return y
+    return y 
+
+end
 ```
