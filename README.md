@@ -154,7 +154,7 @@ One can generate the visualization for $y(t)$
     tt = tspan[1]:dt:tspan[2]
       
     # Reshape to plot
-    ndofs = size(M,1)
+    ndofs = size(y(0.0),1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
 
     # Plot
@@ -241,7 +241,7 @@ One can generate the visualization for $y(t)$
     tt = tspan[1]:dt:tspan[2]
       
     # Reshape to plot
-    ndofs = size(M,1)
+    ndofs = size(y(0.0),1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
 
     # Plot
@@ -329,7 +329,7 @@ One can generate the visualization for $y(t)$
     tt = tspan[1]:dt:tspan[2]
       
     # Reshape to plot
-    ndofs = size(M,1)
+    ndofs = size(y(0.0),1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
 
     # Plot
@@ -415,7 +415,7 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     tt = tspan[1]:dt:tspan[2]
       
     # Reshape to plot
-    ndofs = size(M,1)
+    ndofs = size(y(0.0),1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
 
     # Plot
