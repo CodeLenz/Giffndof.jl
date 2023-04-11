@@ -6,7 +6,12 @@
 # Generalized Integrating Factor for NDOFs
 
 This repository contains the computer implementation of the solution procedures developed in <Link>
+for solving coupled systems of second order ODEs with constant coefficients
 
+    $$ M A(t) + C V(t) + K Y(t) = F(t) $$
+
+where $t$ is the independent variable, $Y(t)$ a $n \times 1$ vector (dependent variables), $V$ its first   derivative with respect to $t$ and $A$ its second derivative. Matrices  $M$, $C$ and $K$ are $n \times n$. Vector $F(t)$ is informed by using a dictionary.
+ 
 As this package is not yet registered, you must install it by using
 
 ```julia
@@ -14,15 +19,68 @@ using Pkg
 Pkg.add("git@github.com:CodeLenz/Giffndof.jl.git")
 ```
 
-Some examples of the manuscript are used to exemplify the package
+*** Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented ***
 
-## Example 1
+There are four main methods being exported, depending on the type
+of excitation:
 
 ```julia
-#
-# Solve a 3DOF problem subjected to an harmonic force 3sin(4t)
-# in the second DOF.
-#
+y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+```
+
+```julia
+y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+```
+
+```julia
+y = Solve_dirac(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+```
+
+```julia
+y = Solve_heaviside(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+```
+
+where $y$ is the complete solution, $y_h$ the homogeneous solution and $y_p$ the permanent solution. Those solutions are functions and can be evaluated by simply passing a given time 
+
+```julia
+y(0.1) 
+```
+
+for example.
+
+
+There is a specific way of informing non null entries in $F(t)$ for each type of excitation. 
+
+
+## Exponentials
+
+For forces described as a series of exponentials 
+
+$$ f_j(t) = \sum_{k=1}^{n_k} c_{jk} \exp(i \omega_{jk} t + \phi_{jk}) $$
+
+the user must inform the DOF $j$ as a key to a dictionary with entries given by (possible complex values) of $c_{jk}$ and $\omega_{jk}$
+
+```julia
+    load_data = Dict{Int64,Vector{ComplexF64}}()
+```
+
+Lets consider the first example in the reference manuscript
+
+### Example 1
+
+Consider a $3$ DOFs problem subjected to a force 
+
+$$ f_2(t) = 3 \sin(4t) = 3\frac{i}{2}(\exp(-4it) - \exp(4it)) $$
+
+such that the (complex) amplitudes are $c_{21}=3i/2$ and $c_{22}=-3i/2$ and the angular frequencies are $\omega_{21}=-4$ and $\omega_{22}=4$. Thus,
+
+```julia
+load_data[2] = [3*im/2; -3*im/2; -4.0; 4.0]
+```
+
+The complete example is 
+
+```julia
 function Example_exponential(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -91,7 +149,31 @@ end
 
 ```
 
-## Example 2
+## Polynomials
+
+For forces described as a polynomial
+
+$$ f_j(t) = \sum_{k=0}^{n_k} c_{jk} (t-t_j)^k $$
+
+the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk}$ and $t_j$
+
+```julia
+    load_data = Dict{Int64,Vector{Float64}}()
+```
+
+### Example 2
+
+Consider a $3$ DOFs problem subjected to a force 
+
+$$ f_2(t) = 10 t - t^2 $$
+
+such that $t_2=0$,  $c_{20}=0$,  $c_{21}=10$,  $c_{22}=-1$. Thus
+
+```julia
+load_data[2] = [0.0; 0.0; 10.0; -1.0]
+```
+
+The complete example is 
 
 ```julia
 function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
@@ -117,9 +199,8 @@ function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data = OrderedDict{Int64,Vector{Float64}}()
 
     # 10t - t^2 at DOF 2
-    #        DOF     c20  c21   c22   t2
+    #        DOF     t2   c20  c21    c22  
     load_data[2] = [0.0 ; 0.0; 10.0; -1.0]
-
 
     #  Main function -> solve the problem
     y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
@@ -140,7 +221,31 @@ function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 end
 ```
 
-## Example 3
+## Unitary impulse (Dirac's delta)
+
+For forces described as a series of unitary impulses
+
+$$ f_j(t) = \sum_{k=}^{n_k} c_{jk} \delta(t-t_{jk}) $$
+
+the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk}$ and $t_{jk}$
+
+```julia
+    load_data = Dict{Int64,Vector{Float64}}()
+```
+
+### Example 3
+
+Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$s
+
+$$ f_2(t) = \delta(t-1) - \delta(t-5) $$
+
+such that $c_{20}=1.0$, $t_{20}=1$, $c_{21}=-1$ and $t_{21}=5.0$
+
+```julia
+load_data[2] = [1.0; 1.0; -1.0; 5.0]
+```
+
+The complete example is 
 
 ```julia
 function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
@@ -192,7 +297,32 @@ function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 end
 ```
 
-## Example 4
+## Second order polynomials multiplied by Heavisides
+
+For forces described as second order polynomials times heavisides
+
+$$ f_j(t) = \sum_{k=}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk}) $$
+
+the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk*}$ and $t_{jk}$
+
+```julia
+    load_data = Dict{Int64,Vector{Float64}}()
+```
+
+### Example 4
+
+Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$s
+
+$$ f_2(t) = H(t-1) - H(t-5) $$
+
+such that $c_{200}=1$, $c_{201}=0$, $c_{202}=0$, $t_{20}=1$, $c_{210}=-1$, $c_{211}=0$, $c_{212}=0$, $t_{21}=5$
+
+```julia
+load_data[2] = [1.0; 0.0; 0.0; 1.0; -1.0; 0.0; 0.0; 5.0]
+```
+
+The complete example is 
+
 ```julia
 function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
