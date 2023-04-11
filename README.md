@@ -83,7 +83,7 @@ load_data[2] = [3*im/2; -3*im/2; -4.0; 4.0]
 The complete example is 
 
 ```julia
-function Example_exponential(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+function Example_exponential(t0 =0.0)
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -134,6 +134,20 @@ function Example_exponential(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     # Main function -> solve the problem
     y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
+    # Return the solutions for any t
+    return y, yh, yp
+    
+ end   
+```
+
+One can generate the visualization for $y(t)$
+
+```julia
+  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+
+    # Call the example
+    y, yh, yp = Example_exponential()
+
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
       
@@ -143,9 +157,6 @@ function Example_exponential(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Plot
     display(plot(tt,yy))
-
-    # Return y, yh and yp
-    return y, yh, yp
 
 end
 
@@ -207,18 +218,30 @@ function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     #  Main function -> solve the problem
     y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
+    # Return the solution
+    return y, yh, yp
+
+end
+
+```
+
+One can generate the visualization for $y(t)$
+
+```julia
+  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+
+    # Call the example
+    y, yh, yp = Example_polynomial()
+
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
-       
+      
     # Reshape to plot
     ndofs = size(M,1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
- 
+
     # Plot
     display(plot(tt,yy))
- 
-    # Return y, yh and yp
-    return y, yh, yp
 
 end
 ```
@@ -283,18 +306,28 @@ function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     #  Main function -> solve the problem
     y = Solve_dirac(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
+    # Return the complete solution
+    return y
+    
+ end
+```
+One can generate the visualization for $y(t)$
+
+```julia
+  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+
+    # Call the example
+    y, yh, yp = Example_polynomial()
+
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
-       
+      
     # Reshape to plot
     ndofs = size(M,1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
- 
+
     # Plot
     display(plot(tt,yy))
- 
-    # Return y
-    return y
 
 end
 ```
@@ -356,18 +389,29 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     #  Main function -> solve the problem
     y = Solve_heaviside(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
+    # Return the solution
+    return y
+    
+ end
+``` 
+
+ One can generate the visualization for $y(t)$
+
+```julia
+  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+
+    # Call the example
+    y, yh, yp = Example_heaviside()
+
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
-        
+      
     # Reshape to plot
     ndofs = size(M,1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
-  
+
     # Plot
     display(plot(tt,yy))
-  
-    # Return y
-    return y 
 
 end
 ```
