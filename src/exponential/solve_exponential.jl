@@ -1,13 +1,4 @@
 
-#######################################################################################
-# The objective is to show the computer implementation of the Equations derived in the 
-# manuscript XXXXXXXXXXXXXXX. There is no concern with efficiency!
-#
-# april 2023
-# eduardo.cardoso@udesc.br
-#######################################################################################
-using LinearAlgebra
-
 # Load solution procedures
 include("../common/homo.jl")
 include("functions_exponential.jl")
