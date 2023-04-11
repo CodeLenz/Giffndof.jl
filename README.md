@@ -27,19 +27,19 @@ There are four main methods being exported, depending on the type
 of excitation:
 
 ```julia
-y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
 ```julia
-y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
 ```julia
-y = Solve_dirac(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+y = Solve_dirac(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
 ```julia
-y = Solve_heaviside(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+y = Solve_heaviside(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
 where $y$ is the complete solution, $y_h$ the homogeneous solution and $y_p$ the permanent solution. Those solutions are functions and can be evaluated by simply passing a given time 
@@ -133,7 +133,7 @@ function Example_exponential(t0 =0.0)
     load_data[2] = [c_21; w_21; c_22; w_22]
 
     # Main function -> solve the problem
-    y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+    y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,t0=t0)
 
     # Return the solutions for any t
     return y, yh, yp
@@ -219,7 +219,7 @@ function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data[2] = [0.0 ; 0.0; 10.0; -1.0]
 
     #  Main function -> solve the problem
-    y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+    y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,t0=t0)
 
     # Return the solution
     return y, yh, yp
@@ -309,7 +309,7 @@ function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data[2] = [1.0 ; 1.0; -1.0 ; 5.0]
 
     #  Main function -> solve the problem
-    y = Solve_dirac(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+    y = Solve_dirac(M,C,K,U0,V0,load_data,t0=t0)
 
     # Return the complete solution
     return y
@@ -394,7 +394,7 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data[2] = [1.0; 0.0; 0.0; 1.0 ; -1.0; 0.0; 0.0; 5.0 ]
 
     #  Main function -> solve the problem
-    y = Solve_heaviside(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
+    y = Solve_heaviside(M,C,K,U0,V0,load_data,t0=t0)
 
     # Return the solution
     return y
