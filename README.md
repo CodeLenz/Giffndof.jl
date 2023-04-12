@@ -262,7 +262,7 @@ end
 
 For forces described as a series of unitary impulses
 
-$$ f_j(t) = \sum_{k=}^{n_k} c_{jk} \delta(t-t_{jk}) $$
+$$ f_j(t) = \sum_{k=0}^{n_k} c_{jk} \delta(t-t_{jk}) $$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk}$ and $t_{jk}$
 
@@ -272,7 +272,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 ### Example 3
 
-Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$s
+Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$ s
 
 $$ f_2(t) = \delta(t-1) - \delta(t-5) $$
 
@@ -350,7 +350,7 @@ end
 
 For forces described as second order polynomials times heavisides
 
-$$ f_j(t) = \sum_{k=}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk}) $$
+$$ f_j(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk}) $$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk*}$ and $t_{jk}$
 
@@ -360,7 +360,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 ### Example 4
 
-Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$s
+Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
 
 $$ f_2(t) = H(t-1) - H(t-5) $$
 
