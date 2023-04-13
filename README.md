@@ -1,24 +1,14 @@
 # Giffndof
-![logo](Logo-Giff.png)
-
 
 [![Build Status](https://github.com/CodeLenz/Giffndof.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/CodeLenz/Giffndof.jl/actions/workflows/CI.yml?query=branch%3Amain)
 
 
 # Generalized Integrating Factor for NDOFs
 
-This repository contains the computer implementation of the solution procedures developed in **to be included** 
+This repository contains the computer implementation of the solution procedures developed in <Link>
 for solving coupled systems of second order ODEs with constant coefficients
 
-$$ M A(t) + C V(t) + K Y(t) = F(t) $$
-
-with initial conditions
-
-$$ Y(t_0) = U0 $$
-
-and
-
-$$ V(t_0) = V0 $$
+    $$ M A(t) + C V(t) + K Y(t) = F(t) $$
 
 where $t$ is the independent variable, $Y(t)$ a $n \times 1$ vector (dependent variables), $V$ its first   derivative with respect to $t$ and $A$ its second derivative. Matrices  $M$, $C$ and $K$ are $n \times n$. Vector $F(t)$ is informed by using a dictionary.
  
@@ -26,28 +16,28 @@ As this package is not yet registered, you must install it by using
 
 ```julia
 using Pkg
-Pkg.add("https://github.com/CodeLenz/Giffndof.jl.git")
+Pkg.add("git@github.com:CodeLenz/Giffndof.jl.git")
 ```
 
-***Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented***
+*** Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented ***
 
 There are four main methods being exported, depending on the type
 of excitation:
 
 ```julia
-y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,t0=t0)
+y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 ```
 
 ```julia
-y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,t0=t0)
+y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 ```
 
 ```julia
-y = Solve_dirac(M,C,K,U0,V0,load_data,t0=t0)
+y, yh, yp = Solve_dirac(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 ```
 
 ```julia
-y = Solve_heaviside(M,C,K,U0,V0,load_data,t0=t0)
+y, yh, yp = Solve_heaviside(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 ```
 
 where $y$ is the complete solution, $y_h$ the homogeneous solution and $y_p$ the permanent solution. Those solutions are functions and can be evaluated by simply passing a given time 
@@ -91,8 +81,7 @@ load_data[2] = [3*im/2; -3*im/2; -4.0; 4.0]
 The complete example is 
 
 ```julia
-using Giffndof
-function Example_exponential(t0 =0.0)
+function Example_exponential(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -141,32 +130,20 @@ function Example_exponential(t0 =0.0)
     load_data[2] = [c_21; w_21; c_22; w_22]
 
     # Main function -> solve the problem
-    y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,t0=t0)
-
-    # Return the solutions for any t
-    return y, yh, yp
-    
- end   
-```
-
-One can generate the visualization for $y(t)$
-
-```julia
-  using Plots
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
-
-    # Call the example
-    y, yh, yp = Example_exponential()
+    y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
       
     # Reshape to plot
-    ndofs = size(y(0.0),1)
+    ndofs = size(M,1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
 
     # Plot
     display(plot(tt,yy))
+
+    # Return y, yh and yp
+    return y, yh, yp
 
 end
 
@@ -199,7 +176,6 @@ load_data[2] = [0.0; 0.0; 10.0; -1.0]
 The complete example is 
 
 ```julia
-using Giffndof
 function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -227,33 +203,20 @@ function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data[2] = [0.0 ; 0.0; 10.0; -1.0]
 
     #  Main function -> solve the problem
-    y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,t0=t0)
-
-    # Return the solution
-    return y, yh, yp
-
-end
-
-```
-
-One can generate the visualization for $y(t)$
-
-```julia
-  using Plots  
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
-
-    # Call the example
-    y, yh, yp = Example_polynomial()
+    y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
-      
+       
     # Reshape to plot
-    ndofs = size(y(0.0),1)
+    ndofs = size(M,1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
-
+ 
     # Plot
     display(plot(tt,yy))
+ 
+    # Return y, yh and yp
+    return y, yh, yp
 
 end
 ```
@@ -262,7 +225,7 @@ end
 
 For forces described as a series of unitary impulses
 
-$$ f_j(t) = \sum_{k=0}^{n_k} c_{jk} \delta(t-t_{jk}) $$
+$$ f_j(t) = \sum_{k=}^{n_k} c_{jk} \delta(t-t_{jk}) $$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk}$ and $t_{jk}$
 
@@ -272,7 +235,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 ### Example 3
 
-Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$ s
+Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$s
 
 $$ f_2(t) = \delta(t-1) - \delta(t-5) $$
 
@@ -285,7 +248,6 @@ load_data[2] = [1.0; 1.0; -1.0; 5.0]
 The complete example is 
 
 ```julia
-using Giffndof
 function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 
@@ -317,31 +279,20 @@ function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data[2] = [1.0 ; 1.0; -1.0 ; 5.0]
 
     #  Main function -> solve the problem
-    y = Solve_dirac(M,C,K,U0,V0,load_data,t0=t0)
-
-    # Return the complete solution
-    return y
-    
- end
-```
-One can generate the visualization for $y(t)$
-
-```julia
-  using Plots
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
-
-    # Call the example
-    y, yh, yp = Example_polynomial()
+    y, yh, yp = Solve_dirac(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
-      
+       
     # Reshape to plot
-    ndofs = size(y(0.0),1)
+    ndofs = size(M,1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
-
+ 
     # Plot
     display(plot(tt,yy))
+ 
+    # Return y
+    return y
 
 end
 ```
@@ -350,7 +301,7 @@ end
 
 For forces described as second order polynomials times heavisides
 
-$$ f_j(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk}) $$
+$$ f_j(t) = \sum_{k=}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk}) $$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk*}$ and $t_{jk}$
 
@@ -360,7 +311,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 ### Example 4
 
-Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
+Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$s
 
 $$ f_2(t) = H(t-1) - H(t-5) $$
 
@@ -373,7 +324,6 @@ load_data[2] = [1.0; 0.0; 0.0; 1.0; -1.0; 0.0; 0.0; 5.0]
 The complete example is 
 
 ```julia
-using Giffndof
 function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -402,32 +352,20 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data[2] = [1.0; 0.0; 0.0; 1.0 ; -1.0; 0.0; 0.0; 5.0 ]
 
     #  Main function -> solve the problem
-    y = Solve_heaviside(M,C,K,U0,V0,load_data,t0=t0)
-
-    # Return the solution
-    return y
-    
- end
-``` 
-
- One can generate the visualization for $y(t)$
-
-```julia
-  using Plots  
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
-
-    # Call the example
-    y, yh, yp = Example_heaviside()
+    y, yh, yp = Solve_heaviside(M,C,K,U0,V0,load_data,tspan=tspan,t0=t0)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
-      
+        
     # Reshape to plot
-    ndofs = size(y(0.0),1)
+    ndofs = size(M,1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
-
+  
     # Plot
     display(plot(tt,yy))
+  
+    # Return y
+    return y 
 
 end
 ```
