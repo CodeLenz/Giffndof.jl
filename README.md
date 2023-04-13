@@ -206,7 +206,7 @@ load_data[2] = [0.0; 0.0; 10.0; -1.0]
 The complete example is 
 
 ```julia
-using Giffndof, OrderedDict
+using Giffndof, OrderedCollections
 function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -292,7 +292,7 @@ load_data[2] = [1.0; 1.0; -1.0; 5.0]
 The complete example is 
 
 ```julia
-using Giffndof, OrderedDict
+using Giffndof, OrderedCollections
 function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 
@@ -380,7 +380,7 @@ load_data[2] = [1.0; 0.0; 0.0; 1.0; -1.0; 0.0; 0.0; 5.0]
 The complete example is 
 
 ```julia
-using Giffndof, OrderedDict
+using Giffndof, OrderedCollections
 function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
