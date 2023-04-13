@@ -29,6 +29,13 @@ using Pkg
 Pkg.add("https://github.com/CodeLenz/Giffndof.jl.git")
 ```
 
+The OrderedDict data type of package OrderedCollections is needed to use this package. It can also be installed by using 
+
+```julia
+using Pkg
+Pkg.add(OrderedCollections)
+```
+
 ***Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented***
 
 There are four main methods being exported, depending on the type
@@ -199,7 +206,7 @@ load_data[2] = [0.0; 0.0; 10.0; -1.0]
 The complete example is 
 
 ```julia
-using Giffndof
+using Giffndof, OrderedDict
 function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -285,7 +292,7 @@ load_data[2] = [1.0; 1.0; -1.0; 5.0]
 The complete example is 
 
 ```julia
-using Giffndof
+using Giffndof, OrderedDict
 function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 
@@ -373,7 +380,7 @@ load_data[2] = [1.0; 0.0; 0.0; 1.0; -1.0; 0.0; 0.0; 5.0]
 The complete example is 
 
 ```julia
-using Giffndof
+using Giffndof, OrderedDict
 function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
