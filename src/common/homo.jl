@@ -2,6 +2,8 @@
 """
  Evaluate constants C1 and C2 due to intial conditions
 
+ General case when evaluating both yp(t) and dyp(t)
+
  t0   -> time to impose the initial conditions
 
  F211 -> Constant matrix
@@ -26,16 +28,68 @@ function Evaluate_Cs(t0::Float64,F211::AbstractMatrix{T1},FCb::AbstractMatrix{T1
                      U0::Vector{T2}, V0::Vector{T2},
                      yp::Function, dyp::Function) where {T1,T2}
 
+    #
+    # Evaluate particular response and its derivative at t0
+    #
+    yp0  = yp(t0)
+    dyp0 = dyp(t0)
+ 
     if t0==0.0
        #
        # Specific case when t0 = 0.0 (Equation A.5)
        #
-       C1, C2 = Evaluate_Cs_t00(F211,FCb,Cb2F,U0,V0,yp(t0),dyp(t0))
+       C1, C2 = Evaluate_Cs_t00(F211,FCb,Cb2F,U0,V0,yp0,dyp0)
     else
         #
         # General case for t0 different than 0.0 (Equations A.8 and A.9)
         #
-       C1, C2 = Evaluate_Cs_general(t0,F211,FCb,U0,V0,yp(t0),dyp(t0))
+       C1, C2 = Evaluate_Cs_general(t0,F211,FCb,U0,V0,yp0,dyp0)
+    end
+
+    return C1, C2
+end
+
+
+"""
+ Evaluate constants C1 and C2 due to intial conditions
+
+ Particlar case for Heaviside, Dirac and Heaviside series 
+
+ t0   -> time to impose the initial conditions
+
+ F211 -> Constant matrix
+
+ FCb  -> Constant matrix F211 - Cb
+
+ Cb2F -> Constant matrix Cb - 2F211
+
+ U0   -> Initial conditions - user provided real valued vector #
+
+ V0   -> Initial conditions - user provided real valued vector 
+
+ return two (complex valued) vectors C1 and C2
+
+"""
+function Evaluate_Cs(t0::Float64,F211::AbstractMatrix{T1},FCb::AbstractMatrix{T1},
+                     Cb2F::AbstractMatrix{T1},
+                     U0::Vector{T2}, V0::Vector{T2}) where {T1,T2}
+
+    #
+    # We do not need to evaluate the response
+    #
+    yp0  = zero(U0)
+    dyp0 = zero(U0)
+ 
+    if t0==0.0
+       #
+       # Specific case when t0 = 0.0 (Equation A.5)
+       #
+       C1, C2 = Evaluate_Cs_t00(F211,FCb,Cb2F,U0,V0,yp0,dyp0)
+    else
+        #
+        # General case for t0 different than 0.0 (Equations A.8 and A.9)
+        #
+       C1, C2 = Evaluate_Cs_general(t0,F211,FCb,U0,V0,yp0,dyp0)
     end
 
     return C1, C2
