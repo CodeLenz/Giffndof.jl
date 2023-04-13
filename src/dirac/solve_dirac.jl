@@ -29,10 +29,12 @@ include("functions_dirac.jl")
 """
 function Solve_dirac(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
                      U0::AbstractVector{T},V0::AbstractVector{T}, 
-                     load_data::OrderedDict{Int64,Vector{Float64}}; t0=0.0) where T
+                     load_data::OrderedDict{Int64,Vector{Float64}}; tspan=(0.0,10.0),t0=0.0) where T
 
    
     # Basic assertions
+    @assert tspan[1] < tspan[2] "Solve_dirac:: Initial time must be smaller than the final time"
+    @assert tspan[1] <= t0 <= tspan[2] "Solve_dirac:: t0 must be in tspan"
     @assert t0==0 "Solve_dirac:: t0 must be 0.0 by now"
 
     # Evaluate F211 - Equation 65
@@ -47,13 +49,25 @@ function Solve_dirac(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatri
     # Pre-process 
     sol_j = Process_dirac(M, C, F211, load_data)
 
+    # Evaluate FC (Auxiliary matrix to avoid repeated computation)
+    FCb = -CbF
+
+    # Evaluate Cb2F (Auxiliary matrix to avoid repeated computation)
+    Cb2F = Cb .- 2*F211
+
+    # Evaluate constants C1 and C2 - Appendix A
+    C1, C2 = Evaluate_Cs(t0,F211,FCb,Cb2F,U0,V0)
+
+    # Homogeneous solution at t - Equation 49
+    yh(t) = y_homo(t,F211,FCb,C1,C2)
+
     # Permanent solution for a given time
     yp(t) = y_permanent_dirac(t,sol_j,load_data,F211,CbF)
 
     # Complete response
-    y(t) = yp(t)
+    y(t) = yp(t) + yh(t)
 
-    # Return complete response
-    return y
+    # Return complete response, homogeneous and particular
+    return y, yh, yp
 
 end
