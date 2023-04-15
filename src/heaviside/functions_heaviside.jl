@@ -106,12 +106,26 @@ M001 = CbF^(-1)
 
 F211  -> constant matrix
 
+m01m1 = M01*M1
+
+m01m2 = M01*M2
+
+m01m3 = M01*M3
+
+m02m1 = M02*M1
+
+m02m2 = M02*M2
+
+m03m1 = M03*M1
+
 outp         -> output vector (modified in place) 
 """
 function y_permanent_heaviside!(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
                       M01::AbstractMatrix, M02::AbstractMatrix, M03::AbstractMatrix, M1::AbstractMatrix,
                       M2::AbstractMatrix, M3::AbstractMatrix,  M001::AbstractMatrix,
-                      F211::AbstractMatrix, outp::Vector{Ts})  where Ts
+                      F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix, m01m3::AbstractMatrix,
+                      m02m1::AbstractMatrix, m02m2::AbstractMatrix, m03m1::AbstractMatrix,
+                      outp::Vector{Ts})  where Ts
 
     
     # Set outp to zero
@@ -155,19 +169,22 @@ function y_permanent_heaviside!(t::Float64,sol_j::AbstractMatrix,load_data::Orde
                 t1 = t_jk - t
 
                 # T1
-                T1 = (c_jk2*t^2)*M01*M1
+                T1 = (c_jk2*t^2)*m01m1
 
                 # T2
-                T2 = t*( M01*(c_jk1*M1 - 2*c_jk2*M2) -2*c_jk2*M02*M1 )
+                #T2 = t*( M01*(c_jk1*M1 - 2*c_jk2*M2) -2*c_jk2*M02*M1 )
+                T2 = t*(c_jk1*m01m1 -2*c_jk2*m01m2 -2*c_jk2*m02m1) 
 
                 # T3 
-                T3 = 2*c_jk2*M03*M1
+                T3 = 2*c_jk2*m03m1
 
                 # T4
-                T4 = -M02*(c_jk1*M1 -2*c_jk2*M2)
+                #T4 = -M02*(c_jk1*M1 -2*c_jk2*M2)
+                T4 = -c_jk1*m02m1 + 2*c_jk2*m02m2 
  
                 # T5
-                T5 = M01*(2*c_jk2*M3 - c_jk1*M2  + c_jk0*M1)
+                #T5 = M01*(2*c_jk2*M3 - c_jk1*M2  + c_jk0*M1)
+                T5 = 2*c_jk2*m01m3 - c_jk1*m01m2 + c_jk0*m01m1
 
                 # T6
                 T6A = -( c_jk2*t_jk^2 + c_jk1*t_jk + c_jk0  )*M1
@@ -176,20 +193,20 @@ function y_permanent_heaviside!(t::Float64,sol_j::AbstractMatrix,load_data::Orde
                 T6 = exp(F211*t1)*M001*( T6A + T6B + T6C)
 
                 # T7
-                T7A1 = M1*(-c_jk2*t_jk^2  - c_jk1*t_jk - c_jk0)
-                T7A2 = M2*(2*c_jk2*t_jk + c_jk1)
-                T7A3 = M3*(-2*c_jk2)
+                T7A1 = T6A #M1*(-c_jk2*t_jk^2  - c_jk1*t_jk - c_jk0)
+                T7A2 = T6B #M2*(2*c_jk2*t_jk + c_jk1)
+                T7A3 = T6C #M3*(-2*c_jk2)
                 T7A  = M01*(T7A1 + T7A2 + T7A3)
 
                 T7B1 =  M1*(2*c_jk2*t_jk + c_jk1)
                 T7B2 = -2*c_jk2*M2
                 T7B = M02*(T7B1 + T7B2)
 
-                T7C = -2*c_jk2*M03*M1
+                T7C = -T3 #-2*c_jk2*m03m1
 
                 T7D1 = -M1*(c_jk2*t_jk^2 + c_jk2*t_jk + c_jk0)
                 T7D2 =  M2*(2*c_jk2*t_jk + c_jk1)
-                T7D3 = -2*c_jk2*M3
+                T7D3 = T6C #-2*c_jk2*M3
                 T7D  = -M001*(T7D1 + T7D2 + T7D3)
 
                 # Final T7
@@ -238,6 +255,18 @@ M001 = CbF^(-1)
 
 F211  -> constant matrix
 
+m01m1 = M01*M1
+
+m01m2 = M01*M2
+
+m01m3 = M01*M3
+
+m02m1 = M02*M1
+
+m02m2 = M02*M2
+
+m03m1 = M03*M1
+
 Output: 
 
 outp         -> output vector
@@ -245,7 +274,8 @@ outp         -> output vector
 function y_permanent_heaviside(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
                     M01::AbstractMatrix, M02::AbstractMatrix, M03::AbstractMatrix, M1::AbstractMatrix,
                     M2::AbstractMatrix, M3::AbstractMatrix,  M001::AbstractMatrix,
-                    F211::AbstractMatrix)
+                    F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix, m01m3::AbstractMatrix,
+                    m02m1::AbstractMatrix, m02m2::AbstractMatrix, m03m1::AbstractMatrix)
 
 
     # Number of DOFs
@@ -255,10 +285,10 @@ function y_permanent_heaviside(t::Float64,sol_j::AbstractMatrix,load_data::Order
     outp = Vector{ComplexF64}(undef,ngls)
 
     # Call the driver
-    y_permanent_heaviside!(t,sol_j,load_data,CbF,M01,M02,M03,M1,M2,M3,M001,F211,outp)
+    y_permanent_heaviside!(t,sol_j,load_data,CbF,M01,M02,M03,M1,M2,M3,M001,F211,m01m1,m01m2,m01m3,
+                           m02m1,m02m2,m03m1,outp)
 
     # return the output
     return outp
 
 end
-
