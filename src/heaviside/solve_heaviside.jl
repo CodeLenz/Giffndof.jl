@@ -41,13 +41,17 @@ function Solve_heaviside(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractM
 
     # Pre-evaluate matrices needed to compute the permanente solution
     CbF = Cb - F211
+      
+    # Evaluate Cb2F (Auxiliary matrix to avoid repeated computation)
+    Cb2F = Cb .- 2*F211
+
     M01 = CbF^(-1)
     M02 = CbF^(-2)
     M03 = CbF^(-3)
     M1 = F211^(-1)
     M2 = F211^(-2)
     M3 = F211^(-3)
-    M001 = (CbF)^(-1)
+    M001 = (CbwF)^(-1)
     m01m1 = M01*M1
     m01m2 = M01*M2
     m01m3 = M01*M3
@@ -61,9 +65,6 @@ function Solve_heaviside(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractM
     # Evaluate FC (Auxiliary matrix to avoid repeated computation)
     FCb = -CbF
     
-    # Evaluate Cb2F (Auxiliary matrix to avoid repeated computation)
-    Cb2F = Cb .- 2*F211
-
     # Evaluate constants C1 and C2 - Appendix A
     C1, C2 = Evaluate_Cs(t0,F211,FCb,Cb2F,U0,V0)
 
