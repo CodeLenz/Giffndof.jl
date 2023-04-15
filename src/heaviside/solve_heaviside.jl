@@ -30,12 +30,8 @@ include("functions_heaviside.jl")
 """
 function Solve_heaviside(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
                          U0::AbstractVector{T},V0::AbstractVector{T}, 
-                         load_data::OrderedDict{Int64,Vector{Float64}}; tspan=(0.0,10.0),t0=0.0) where T
+                         load_data::OrderedDict{Int64,Vector{Float64}}; t0=0.0) where T
 
-    # Basic assertions
-    @assert tspan[1] < tspan[2] "Solve_heaviside:: Initial time must be smaller than the final time"
-    @assert tspan[1] <= t0 <= tspan[2] "Solve_heaviside:: t0 must be in tspan"
-    @assert t0==0 "Solve_heaviside:: t0 must be 0.0 by now"
 
     # Evaluate F211 
     chol = cholesky(M)
@@ -52,7 +48,13 @@ function Solve_heaviside(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractM
     M2 = F211^(-2)
     M3 = F211^(-3)
     M001 = (CbF)^(-1)
-
+    m01m1 = M01*M1
+    m01m2 = M01*M2
+    m01m3 = M01*M3
+    m02m1 = M02*M1
+    m02m2 = M02*M2
+    m03m1 = M03*M1
+    
     # Pre-process 
     sol_j = Process_heaviside(M,load_data)
 
@@ -69,8 +71,9 @@ function Solve_heaviside(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractM
     yh(t) = y_homo(t,F211,FCb,C1,C2)
 
     # Permanent solution for a given time
-    yp(t) = y_permanent_heaviside(t,sol_j,load_data,CbF, M01, M02, M03, M1, M2, M3, M001, F211)
-
+    yp(t) = y_permanent_heaviside(t,sol_j,load_data,CbF, M01, M02, M03, M1, M2, M3, M001, F211, m01m1,
+                                  m01m2,m01m3,m02m1,m02m2,m03m1)
+    
     # Complete response
     y(t) = yp(t) + yh(t)
 
