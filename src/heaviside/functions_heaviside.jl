@@ -102,7 +102,7 @@ M2 = F211^(-2)
 
 M3 = F211^(-3)
 
-M001 = CbF^(-1)
+M001 = Cb2F^(-1)
 
 F211  -> constant matrix
 
@@ -248,7 +248,7 @@ M2 = F211^(-2)
 
 M3 = F211^(-3)
 
-M001 = CbF^(-1)
+M001 = Cb2F^(-1)
 
 F211  -> constant matrix
 
