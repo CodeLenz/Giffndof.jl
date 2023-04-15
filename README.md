@@ -70,6 +70,7 @@ There is a specific way of informing non null entries in $F(t)$ for each type of
 
 
 ## Exponentials
+<details>
 
 For forces described as a series of exponentials 
 
@@ -178,9 +179,11 @@ One can generate the visualization for $y(t)$
 end
 
 ```
-
+</details>
+ 
 ## Polynomials
-
+<details>
+ 
 For forces described as a polynomial
 
 $$ f_j(t) = \sum_{k=0}^{n_k} c_{jk} (t-t_j)^k $$
@@ -264,9 +267,11 @@ One can generate the visualization for $y(t)$
 
 end
 ```
-
+</details>
+ 
 ## Unitary impulse (Dirac's delta)
-
+<details>
+ 
 For forces described as a series of unitary impulses
 
 $$ f_j(t) = \sum_{k=0}^{n_k} c_{jk} \delta(t-t_{jk}) $$
@@ -352,9 +357,11 @@ One can generate the visualization for $y(t)$
 
 end
 ```
-
+</details>
+ 
 ## Second order polynomials multiplied by Heavisides
-
+<details>
+ 
 For forces described as second order polynomials times heavisides
 
 $$ f_j(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk}) $$
@@ -438,3 +445,4 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 end
 ```
+</details>
