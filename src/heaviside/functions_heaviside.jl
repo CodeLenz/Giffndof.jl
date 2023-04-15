@@ -196,7 +196,7 @@ function y_permanent_heaviside!(t::Float64,sol_j::AbstractMatrix,load_data::Orde
                 T7A  = T7A1 + T7A2 + T7A3
 
                 T7B1 =  m02m1*(2*c_jk2*t_jk + c_jk1)
-                T7B2 =  m02m2*(-2*c_jk2*)
+                T7B2 =  m02m2*(-2*c_jk2)
                 T7B  =  T7B1 + T7B2
 
                 T7C = -T3 #-2*c_jk2*m03m1
