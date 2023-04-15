@@ -56,9 +56,6 @@ function Process_heaviside(M::AbstractMatrix{T},
     count = 1
     for j in keys(load_data)
 
-        # Data
-        data = load_data[j]
-
         # Set position j to 1.0
         e_j[j] = 1.0
 
