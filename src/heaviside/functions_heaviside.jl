@@ -172,18 +172,15 @@ function y_permanent_heaviside!(t::Float64,sol_j::AbstractMatrix,load_data::Orde
                 T1 = (c_jk2*t^2)*m01m1
 
                 # T2
-                #T2 = t*( M01*(c_jk1*M1 - 2*c_jk2*M2) -2*c_jk2*M02*M1 )
                 T2 = t*(c_jk1*m01m1 -2*c_jk2*m01m2 -2*c_jk2*m02m1) 
 
                 # T3 
                 T3 = 2*c_jk2*m03m1
 
                 # T4
-                #T4 = -M02*(c_jk1*M1 -2*c_jk2*M2)
                 T4 = -c_jk1*m02m1 + 2*c_jk2*m02m2 
  
                 # T5
-                #T5 = M01*(2*c_jk2*M3 - c_jk1*M2  + c_jk0*M1)
                 T5 = 2*c_jk2*m01m3 - c_jk1*m01m2 + c_jk0*m01m1
 
                 # T6
@@ -193,18 +190,18 @@ function y_permanent_heaviside!(t::Float64,sol_j::AbstractMatrix,load_data::Orde
                 T6 = exp(F211*t1)*M001*( T6A + T6B + T6C)
 
                 # T7
-                T7A1 = T6A #M1*(-c_jk2*t_jk^2  - c_jk1*t_jk - c_jk0)
-                T7A2 = T6B #M2*(2*c_jk2*t_jk + c_jk1)
-                T7A3 = T6C #M3*(-2*c_jk2)
-                T7A  = M01*(T7A1 + T7A2 + T7A3)
+                T7A1 = m01m1*(-c_jk2*t_jk^2  -c_jk1*t_jk -c_jk0)   
+                T7A2 = m01m2*(2*c_jk2*t_jk + c_jk1) 
+                T7A3 = m01m3*(-2*c_jk2)
+                T7A  = T7A1 + T7A2 + T7A3
 
-                T7B1 =  M1*(2*c_jk2*t_jk + c_jk1)
-                T7B2 = -2*c_jk2*M2
-                T7B = M02*(T7B1 + T7B2)
+                T7B1 =  m02m1*(2*c_jk2*t_jk + c_jk1)
+                T7B2 =  m02m2*(-2*c_jk2*)
+                T7B  =  T7B1 + T7B2
 
                 T7C = -T3 #-2*c_jk2*m03m1
 
-                T7D1 = -M1*(c_jk2*t_jk^2 + c_jk2*t_jk + c_jk0)
+                T7D1 = -M1*(c_jk2*t_jk^2 + c_jk1*t_jk + c_jk0)
                 T7D2 =  M2*(2*c_jk2*t_jk + c_jk1)
                 T7D3 = T6C #-2*c_jk2*M3
                 T7D  = -M001*(T7D1 + T7D2 + T7D3)
