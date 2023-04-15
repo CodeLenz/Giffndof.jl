@@ -23,6 +23,8 @@ Inputs:
 
  ``load_data`` -> Dictionary with key j (gl) and data 
             ``[c_jk0 c_jk1 c_jk2 t_j1 ... c_j(nk)0 c_j(nk)1 c_j(nk)2 t_j(nk)]``
+or 
+            ``function`` 
  
 Outputs:
 
@@ -30,7 +32,7 @@ Outputs:
 
 """
 function Process_heaviside(M::AbstractMatrix{T},  
-                           load_data::OrderedDict{Int64,Vector{Float64}}) where {T}
+                           load_data::OrderedDict{Int64,T1}) where {T,T1}
 
 
     # Number of DOFs
