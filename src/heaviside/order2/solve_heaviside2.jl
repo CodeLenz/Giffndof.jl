@@ -28,7 +28,7 @@ include("functions_heaviside2.jl")
 
 
 """
-function Solve_heaviside(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
+function Solve_heaviside2(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
                          U0::AbstractVector{T},V0::AbstractVector{T}, 
                          load_data::OrderedDict{Int64,Vector{Float64}}; t0=0.0) where T
 
