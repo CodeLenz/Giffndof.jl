@@ -11,7 +11,7 @@ module Giffndof
     # load common functions
     include("common/homo.jl")
     include("common/step.jl")
-    include("heaviseid/commonh.jl")
+    include("heaviside/commonh.jl")
 
     # Load solution methods
     include("exponential/solve_exponential.jl")
