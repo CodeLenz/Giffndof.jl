@@ -47,6 +47,7 @@ function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{
 
     # Pre-evaluate matrices needed to compute the permanente solution
     CbF = Cb .- F211
+    FCb = -CbF
     M01 = CbF^(-1)
     M02 = CbF^(-2)
     M1 = F211^(-1)
