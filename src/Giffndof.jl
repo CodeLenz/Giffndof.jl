@@ -19,7 +19,7 @@ module Giffndof
     include("dirac/solve_dirac.jl")
     include("heaviside/order2/solve_heaviside2.jl")
     include("heaviside/order1/solve_heaviside1.jl")
-    include("heaviside/order2/solve_heaviside0.jl")
+    include("heaviside/order0/solve_heaviside0.jl")
     include("heaviside_series1/solve_hs1.jl")
 
     # Export the methods - Solvers
