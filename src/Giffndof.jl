@@ -19,11 +19,14 @@ module Giffndof
     include("heaviside/solve_heaviside.jl")
     include("heaviside_series1/solve_hs1.jl")
 
-    # Export the methods
+    # Export the methods - Solvers
     export Solve_exponential
     export Solve_polynomial
     export Solve_dirac
     export Solve_heaviside
     export Solve_HS1
+
+    # Export some auxiliary functions
+    export Evaluate_coefs_c, Create_gtilde
 
 end #module
