@@ -604,7 +604,7 @@ end
 
 Let's now consider the case of discrete excitations
 ```julia
-
+ using StableRNGs
  function Example_HS1_discrete(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
@@ -628,7 +628,10 @@ Let's now consider the case of discrete excitations
     Ts = tspan[1]:dt:tspan[2]
 
     # Generate a random load at these discrete times
-    vg = randn(length(Ts))
+    # Let's use StableRNG to make it easier to 
+    # compare
+    rng = StableRNG(123)
+    vg = randn(rng,length(Ts))
 
     # Loading
     load_data = OrderedDict{Int64,Vector{Float64}}()
