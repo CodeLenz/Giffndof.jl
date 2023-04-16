@@ -38,7 +38,7 @@ Pkg.add("OrderedCollections")
 
 ***Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented***
 
-There are five main methods being exported, depending on the type
+There are seven main methods being exported, depending on the type
 of excitation:
 
 Analytical solutions
@@ -53,6 +53,14 @@ y, yh, yp = Solve_polynomial(M,C,K,U0,V0,load_data,t0=t0)
 
 ```julia
 y, yh, yp = Solve_dirac(M,C,K,U0,V0,load_data,t0=t0)
+```
+
+```julia
+y, yh, yp = Solve_heaviside0(M,C,K,U0,V0,load_data,t0=t0)
+```
+
+```julia
+y, yh, yp = Solve_heaviside1(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
 ```julia
@@ -92,7 +100,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 Lets consider the first example in the reference manuscript
 
-### Example 1
+### Example
 
 Consider a $3$ DOFs problem subjected to a force 
 
@@ -202,7 +210,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example 2
+### Example
 
 Consider a $3$ DOFs problem subjected to a force 
 
@@ -290,7 +298,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example 3
+### Example
 
 Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$ s
 
@@ -366,7 +374,186 @@ One can generate the visualization for $y(t)$
 end
 ```
 </details>
+
+## Zero order polynomials multiplied by Heavisides
+<details>
  
+For forces described as first order polynomials times heavisides
+
+ $f_j(t) = \sum_{k=0}^{n_k} (c_{jk0}) H(t-t_{jk})$
+
+the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk*}$ and $t_{jk}$
+
+```julia
+    load_data = Dict{Int64,Vector{Float64}}()
+```
+
+### Example
+
+Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
+
+ $f_2(t) = H(t-1) - H(t-5)$
+
+such that $c_{200}=1$, $t_{20}=1$, $c_{210}=-1$, $t_{21}=5$
+
+```julia
+load_data[2] = [1.0; 1.0; -1.0; 5.0]
+```
+
+The complete example is 
+
+```julia
+using Giffndof, OrderedCollections
+function Example_heaviside0(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    #
+    # Loading (1 + 0*t) H(t-1) - (1 + 0*t)H(t-5)
+    #
+    load_data = OrderedDict{Int64,Vector{Float64}}()
+
+    #   c_j00  t_jk .... c_j(nk)0  t_j(nk)
+    load_data[2] = [1.0; 1.0 ; -1.0;  5.0 ]
+
+    #  Main function -> solve the problem
+    y, yh, yp = Solve_heaviside0(M,C,K,U0,V0,load_data,t0=t0)
+
+    # Return the solution
+    return y, yh, yp
+    
+ end
+``` 
+
+ One can generate the visualization for $y(t)$
+
+```julia
+  using Plots  
+  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+
+    # Call the example
+    y, yh, yp = Example_heaviside0(tspan=tspan,dt=dt)
+
+    # Discrete times to make the plot
+    tt = tspan[1]:dt:tspan[2]
+      
+    # Reshape to plot
+    ndofs = size(y(0.0),1)
+    yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
+
+    # Plot
+    display(plot(tt,yy))
+
+end
+```
+</details>
+
+
+
+## First order polynomials multiplied by Heavisides
+<details>
+ 
+For forces described as first order polynomials times heavisides
+
+ $f_j(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t ) H(t-t_{jk})$
+
+the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk*}$ and $t_{jk}$
+
+```julia
+    load_data = Dict{Int64,Vector{Float64}}()
+```
+
+### Example
+
+Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
+
+ $f_2(t) = H(t-1) - H(t-5)$
+
+such that $c_{200}=1$, $c_{201}=0$, $t_{20}=1$, $c_{210}=-1$, $c_{211}=0$, $t_{21}=5$
+
+```julia
+load_data[2] = [1.0; 0.0; 1.0; -1.0; 0.0; 5.0]
+```
+
+The complete example is 
+
+```julia
+using Giffndof, OrderedCollections
+function Example_heaviside1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    #
+    # Loading (1 + 0*t) H(t-1) - (1 + 0*t)H(t-5)
+    #
+    load_data = OrderedDict{Int64,Vector{Float64}}()
+
+    #   c_j00 c_j01  t_jk .... c_j(nk)0 c_j(nk)1 t_j(nk)
+    load_data[2] = [1.0; 0.0; 1.0 ; -1.0; 0.0; 5.0 ]
+
+    #  Main function -> solve the problem
+    y, yh, yp = Solve_heaviside1(M,C,K,U0,V0,load_data,t0=t0)
+
+    # Return the solution
+    return y, yh, yp
+    
+ end
+``` 
+
+ One can generate the visualization for $y(t)$
+
+```julia
+  using Plots  
+  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+
+    # Call the example
+    y, yh, yp = Example_heaviside1(tspan=tspan,dt=dt)
+
+    # Discrete times to make the plot
+    tt = tspan[1]:dt:tspan[2]
+      
+    # Reshape to plot
+    ndofs = size(y(0.0),1)
+    yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
+
+    # Plot
+    display(plot(tt,yy))
+
+end
+```
+</details>
+
+
 ## Second order polynomials multiplied by Heavisides
 <details>
  
@@ -380,7 +567,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example 4
+### Example
 
 Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
 
@@ -475,7 +662,7 @@ for continuous functions or a set of discrete values
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example 5
+### Example
 
 Consider a reference function 
 
@@ -530,7 +717,7 @@ The user does not have to explicitly construct the approximation, such that
 previous example is important to understand and to visualize the quality 
 of the approximation.
 
-### Example 6
+### Example
 
 Consider the same function $g(t)$ used in the previous example
 
