@@ -602,7 +602,10 @@ function Example_HS1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 end
 ```
 
+
 Let's now consider the case of discrete excitations
+
+
 ```julia
  using StableRNGs
  function Example_HS1_discrete(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
