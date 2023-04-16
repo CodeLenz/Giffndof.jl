@@ -34,7 +34,7 @@ include("functions_hs1.jl")
 
 """
 function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
-                   U0::AbstractVector{T},V0::AbstractVector{T}, Ts::T0
+                   U0::AbstractVector{T},V0::AbstractVector{T}, Ts::T0,
                    load_data::Dict{Int64,Function}; t0=0.0) where {T0,T}
 
 
