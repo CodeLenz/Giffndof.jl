@@ -457,7 +457,7 @@ end
  
 For forces described as First Order Heaviside Series
 
- $\hat{f}(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t) H(t-t_{jk})$
+ ${f}(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t) H(t-t_{jk})$
 
 the user must inform the DOF $j$ as a key to a dictionary with the reference function $g(t)$
 
