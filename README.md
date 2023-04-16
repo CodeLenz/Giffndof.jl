@@ -480,14 +480,14 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 ### Example
 
-Consider a $3$ DOFs problem subjected to two oposite linear ramps at $t=1$ and $t=5$ s
+Consider a $3$ DOFs problem subjected to a linear ramp from $t=1$ to $t=5$ s and a constant value for $t>=5$.
 
- $f_2(t) = (2t)*H(t-1) + (8-2t)*H(t-5)$
+ $f_2(t) = (-2+2t)*H(t-1) + (6-2t)*H(t-5)$
 
-such that $c_{200}=0$, $c_{201}=2$, $t_{20}=1$, $c_{210}=8$, $c_{211}=-2$, $t_{21}=5$
+such that $c_{200}=-2$, $c_{201}=2$, $t_{20}=1$, $c_{210}=6$, $c_{211}=-2$, $t_{21}=5$
 
 ```julia
-load_data[2] = [0.0; 2.0; 1.0; 8.0; -2.0; 5.0]
+load_data[2] = [-2.0; 2.0; 1.0; 6.0; -2.0; 5.0]
 ```
 
 The complete example is 
@@ -514,12 +514,12 @@ function Example_heaviside1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     V0  = [0.0; 0.0; 0.0]
 
     #
-    # Loading (2*t) H(t-1) - (8 - 2*t)H(t-5)
+    # Loading (-2+2*t) H(t-1) + (6 - 2*t)H(t-5)
     #
     load_data = OrderedDict{Int64,Vector{Float64}}()
 
     #   c_j00 c_j01  t_jk .... c_j(nk)0 c_j(nk)1 t_j(nk)
-    load_data[2] = [0.0; 2.0; 1.0 ; 8.0; -2.0; 5.0 ]
+    load_data[2] = [-2.0; 2.0; 1.0 ; 6.0; -2.0; 5.0 ]
 
     #  Main function -> solve the problem
     y, yh, yp = Solve_heaviside1(M,C,K,U0,V0,load_data,t0=t0)
