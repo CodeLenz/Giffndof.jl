@@ -41,6 +41,8 @@ Pkg.add("OrderedCollections")
 There are five main methods being exported, depending on the type
 of excitation:
 
+Analytical solutions
+
 ```julia
 y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,t0=t0)
 ```
@@ -56,6 +58,8 @@ y, yh, yp = Solve_dirac(M,C,K,U0,V0,load_data,t0=t0)
 ```julia
 y, yh, yp = Solve_heaviside(M,C,K,U0,V0,load_data,t0=t0)
 ```
+
+Approximate solutions obtained by using first order Heaviside Series
 
 ```julia
 y, yh, yp = Solve_HS1(M,C,K,U0,V0,Ts,load_data,t0=t0)
@@ -457,7 +461,7 @@ end
  
 For forces described as First Order Heaviside Series
 
- ${f}(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t) H(t-t_{jk})$
+ $\hat{f}(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t) H(t-t_{jk})$
 
 the user must inform the DOF $j$ as a key to a dictionary with the reference function $g(t)$
 
