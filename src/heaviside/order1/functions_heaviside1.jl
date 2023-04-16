@@ -15,8 +15,6 @@ CbF = Cb - F211
 
 M01 = M0^(-1)
 
-M02 = M0^(-2)
-
 M1 = F211^(-1)
 
 M2 = F211^(-2)
@@ -31,16 +29,13 @@ m01m2 = M01*M2
 
 m02m1 = M02*M1
 
-m02m2 = M02*M2
-
 outp         -> output vector (modified in place) 
 """
 function y_permanent_heaviside1!(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M02::AbstractMatrix, M1::AbstractMatrix,
+                      M01::AbstractMatrix, M1::AbstractMatrix,
                       M2::AbstractMatrix, M3::AbstractMatrix,  M001::AbstractMatrix,
                       F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix,
-                      m02m1::AbstractMatrix, m02m2::AbstractMatrix, 
-                      outp::Vector{Ts})  where Ts
+                      m02m1::AbstractMatrix, outp::Vector{Ts})  where Ts
 
     
     # Set outp to zero
@@ -140,8 +135,6 @@ CbF = Cb - F211
 
 M01 = M0^(-1)
 
-M02 = M0^(-2)
-
 M1 = F211^(-1)
 
 M2 = F211^(-2)
@@ -156,17 +149,15 @@ m01m2 = M01*M2
 
 m02m1 = M02*M1
 
-m02m2 = M02*M2
-
 Output: 
 
 outp         -> output vector
 """
 function y_permanent_heaviside1(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                    M01::AbstractMatrix, M02::AbstractMatrix, M1::AbstractMatrix,
+                    M01::AbstractMatrix, M1::AbstractMatrix,
                     M2::AbstractMatrix, M001::AbstractMatrix,
                     F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix, 
-                    m02m1::AbstractMatrix, m02m2::AbstractMatrix)
+                    m02m1::AbstractMatrix)
 
 
     # Number of DOFs
@@ -176,10 +167,11 @@ function y_permanent_heaviside1(t::Float64,sol_j::AbstractMatrix,load_data::Orde
     outp = Vector{ComplexF64}(undef,ngls)
 
     # Call the driver
-    y_permanent_heaviside1!(t,sol_j,load_data,CbF,M01,M02,M1,M2,M001,F211,m01m1,m01m2,
-                           m02m1,m02m2,outp)
+    y_permanent_heaviside1!(t,sol_j,load_data,CbF,M01,M1,M2,M001,F211,m01m1,m01m2,
+                           m02m1,outp)
 
     # return the output
     return outp
 
 end
+

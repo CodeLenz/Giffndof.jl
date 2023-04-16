@@ -53,7 +53,6 @@ function Solve_heaviside1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     m01m1 = M01*M1
     m01m2 = M01*M2
     m02m1 = M02*M1
-    m02m2 = M02*M2
     
     # Pre-process 
     sol_j = Process_heaviside(M,load_data)
@@ -68,8 +67,8 @@ function Solve_heaviside1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     yh(t) = y_homo(t,F211,FCb,C1,C2)
 
     # Permanent solution for a given time
-    yp(t) = y_permanent_heaviside1(t,sol_j,load_data,CbF, M01, M02, M1, M2, M001, F211, m01m1,
-                                  m01m2,m02m1,m02m2)
+    yp(t) = y_permanent_heaviside1(t,sol_j,load_data,CbF, M01, M1, M2, M001, F211, m01m1,
+                                  m01m2,m02m1)
     
     # Complete response
     y(t) = yp(t) + yh(t)
