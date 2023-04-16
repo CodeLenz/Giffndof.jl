@@ -1,5 +1,5 @@
 # Load solution procedures
-include("functions_heaviside1.jl")
+include("functions_heaviside0.jl")
 
 """
    Solve the sytem of second order ODEs 
