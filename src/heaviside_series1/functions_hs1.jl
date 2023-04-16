@@ -107,7 +107,7 @@ end
  cj1 coefficient 
  
 """
-function Evaluate_coefs_c(g::Function, Ts::) where T
+function Evaluate_coefs_c(g::Function, Ts::T) where T
 
    # Number of intervals 
    n = length(Ts)-1
@@ -238,7 +238,7 @@ end
  the approximation at
  
 """
-function Evaluate_gtilde(t::Float64, cj0::Vector{Float64}, cj1::Vector{Float64}, Ts)
+function Evaluate_gtilde(t::Float64, cj0::Vector{Float64}, cj1::Vector{Float64}, Ts::T) where T
 
    # Number of intervals in Ts
    n = length(Ts)-1
