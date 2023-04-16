@@ -51,7 +51,7 @@ function Solve_heaviside(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractM
     M1 = F211^(-1)
     M2 = F211^(-2)
     M3 = F211^(-3)
-    M001 = (CbwF)^(-1)
+    M001 = (Cb2F)^(-1)
     m01m1 = M01*M1
     m01m2 = M01*M2
     m01m3 = M01*M3
