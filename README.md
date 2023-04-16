@@ -569,14 +569,14 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 ### Example
 
-Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
+Consider a $3$ DOFs problem subjected a "bump" between $t=1$ and $t=3$ s and zero elsewere.
 
- $f_2(t) = H(t-1) - H(t-5)$
+ $f_2(t) = (-30 + 40t - 10t^2)H(t-1) + (30 - 40t + 10t^2)H(t-3)$
 
-such that $c_{200}=1$, $c_{201}=0$, $c_{202}=0$, $t_{20}=1$, $c_{210}=-1$, $c_{211}=0$, $c_{212}=0$, $t_{21}=5$
+such that $c_{200}=-30$, $c_{201}=40$, $c_{202}=-10$, $t_{20}=1$, $c_{210}=30$, $c_{211}=-40$, $c_{212}=10$, $t_{21}=3$
 
 ```julia
-load_data[2] = [1.0; 0.0; 0.0; 1.0; -1.0; 0.0; 0.0; 5.0]
+load_data[2] = [-30.0; 40.0; -10.0; 1.0; 30.0; -40.0; 10.0; 3.0]
 ```
 
 The complete example is 
@@ -608,7 +608,7 @@ function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data = OrderedDict{Int64,Vector{Float64}}()
 
     #   c_j00 c_j01 c_j02  t_jk .... c_j(nk)0 c_j(nk)1 c_j(nk)2 t_j(nk)
-    load_data[2] = [1.0; 0.0; 0.0; 1.0 ; -1.0; 0.0; 0.0; 5.0 ]
+    load_data[2] = [-30.0; 40.0; -10.0; 1.0; 30.0; -40.0; 10.0; 3.0]
 
     #  Main function -> solve the problem
     y, yh, yp = Solve_heaviside2(M,C,K,U0,V0,load_data,t0=t0)
@@ -634,7 +634,7 @@ function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     # Reshape to plot
     ndofs = size(y(0.0),1)
     yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
-
+    
     # Plot
     display(plot(tt,yy))
 
