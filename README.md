@@ -575,6 +575,10 @@ Consider a $3$ DOFs problem subjected a "bump" between $t=1$ and $t=3$ s and zer
 
  $f_2(t) = (-30 + 40t - 10t^2)H(t-1) + (30 - 40t + 10t^2)H(t-3)$
 
+
+![quadratic](docs/images/quadratic.png)
+
+
 such that $c_{200}=-30$, $c_{201}=40$, $c_{202}=-10$, $t_{20}=1$, $c_{210}=30$, $c_{211}=-40$, $c_{212}=10$, $t_{21}=3$
 
 ```julia
@@ -605,7 +609,7 @@ function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     V0  = [0.0; 0.0; 0.0]
 
     #
-    # Loading (1 + 0*t + 0*t^2) H(t-1) - (1 + 0*t + 0*t^2)H(t-5)
+    # Loading (-30 + 40*t - 10*t^2) H(t-1) + (30 - 40*t + 10*t^2)H(t-3)
     #
     load_data = OrderedDict{Int64,Vector{Float64}}()
 
