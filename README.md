@@ -465,6 +465,12 @@ the user must inform the DOF $j$ as a key to a dictionary with the reference fun
     load_data = Dict{Int64,Function}()
 ```
 
+for continuous functions or a set of discrete values 
+
+```julia
+    load_data = Dict{Int64,Vector{Float64}}()
+```
+
 ### Example 5
 
 Consider a reference function 
@@ -591,4 +597,49 @@ function Example_HS1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 end
 ```
+
+Let's now consider the case of discrete excitations
+```julia
+
+ function Example_HS1_discrete(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-6*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    # Create Ts by using tspan and dt
+    Ts = tspan[1]:dt:tspan[2]
+
+    # Generate a random load at these discrete times
+    vg = randn(length(Ts))
+
+    # Loading
+    load_data = OrderedDict{Int64,Vector{Float64}}()
+
+    # Pass vector to the dictionary
+    load_data[2] = vg
+
+    #  Main function -> solve the problem
+    y, yh, yp = Solve_HS1(M,C,K,U0,V0,Ts,load_data,t0=t0)
+
+    # Return the solution
+    return y, yh, yp
+    
+ end
+```
+
+
 </details>
