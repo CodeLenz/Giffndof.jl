@@ -509,7 +509,7 @@ end
 using Plots
 function Example_gtilde()
 
-   # Creta a vector with discrete times and compare the 
+   # Create a vector with discrete times and compare the 
    # original function and the approximate function
    Ts = 0.0:0.01:10.0
 
@@ -605,6 +605,38 @@ end
 
 Let's now consider the case of discrete excitations
 
+Generate a random excitation at times given by Ts and visualize
+the approximation.
+
+```julia
+ using StableRNGs
+ using Plots
+function Example_gtilde_discrete()
+
+   # Create a vector with discrete times and compare the 
+   # original function and the approximate function
+   Ts = 0.0:1.0:10.0
+
+   # Generate a random load at these discrete times
+   # Let's use StableRNG to make it easier to 
+   # compare
+   rng = StableRNG(123)
+   vg = randn(rng,length(Ts))
+
+   # Evaluate coefficients c0 and c1 for g and dt
+   c0, c1 = Evaluate_coefs_c(vg,Ts)
+
+   # Create a function to represent g(t) at any t
+   gtilde(t) = Evaluate_gtilde(t,c0,c1,Ts)
+
+   # Plot both functions
+   scatter(Ts,vg,label="Original",markershape=:circle)
+   scatter!(Ts,gtilde.(Ts),label="Approximation",markershape=:star5)
+
+end
+``` 
+
+Solve a problem using the first order Heaviside Series 
 
 ```julia
  using StableRNGs
