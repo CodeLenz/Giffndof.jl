@@ -13,13 +13,20 @@ include("functions_hs1.jl")
    V(t0) = V0
 
    when excitations are described by using first order Heaviside series built by 
-   using known reference functions ``g(t)``.  
+   using known reference functions ``g(t)`` or a discrete set of values of g.
 
-   Loading is informed by using a dictionary  ``load_data = Dict{Int64,Function}()``
+   Loading is informed by using a dictionary  ``load_data = OrderedDict{Int64,Function}()``
 
    ``load_data[j] = [g(t)]``
 
-   where ``g(t)`` is a function of time only.
+   where ``g(t)`` is a function of time only
+
+   or a vector with discrete set of values 
+
+   ``load_data = OrderedDict{Int64,Vector{Float64}}()``
+
+   ``load_data[j] = [g_1 ; g_2; .... ; g_{nk}]``
+
 
    Ts is a vector of discrete times or a StepRange
 
@@ -35,7 +42,7 @@ include("functions_hs1.jl")
 """
 function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
                    U0::AbstractVector{T},V0::AbstractVector{T}, Ts::T0,
-                   load_data::OrderedDict{Int64,Function}; t0=0.0) where {T0,T}
+                   load_data::OrderedDict{Int64,T1}; t0=0.0) where {T0,T,T1}
 
 
 

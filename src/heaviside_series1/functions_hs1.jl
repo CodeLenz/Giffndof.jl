@@ -1,8 +1,7 @@
-#
-# Evaluate coefficients a at interval [t_l, t_l+1]
-#
 """
  Evaluate the coefficients a used to compute coefficients c.
+
+ Continuous version (load is a function of time)
 
  Inputs:
 
@@ -45,11 +44,56 @@ function Evaluate_coefs_a(g::Function, tl::Float64, tL::Float64)
 
 end
 
-#
-# Evaluate the coefficients c
-#
+
 """
- Evaluate the coefficients c.
+ Evaluate the coefficients a used to compute coefficients c.
+
+ Discrete version (load is given as a vector)
+
+ Inputs:
+
+ interval is the initial position to the interval
+ 
+ g is a vector with discrete values
+
+ Ts is a vector of discrite times or a StepRange
+
+ Outputs:
+
+ a0 coefficient 
+ a1 coefficient 
+
+"""
+function Evaluate_coefs_a(interval::Int64,g::Vector{T}, Ts::T1) where {T,T1}
+
+    # Recover the times
+    tl = Ts[interval]
+    tL = Ts[interval+1]
+
+    # Values of g at the extremes of the interval
+    gl = g[interval]
+    gL = g[interval+1]
+
+    # Evaluate dt for this interval
+    dt = tL-tl
+
+    # Coeficient a1
+    a1 = (gL-gl)/dt
+
+    # Integral of g in the interval. 
+    integral = dt*(gl + 0.5*(gL-gl)) 
+
+    # Coeficient a0
+    a0 = integral/dt - a1*(tL^2 - tl^2)/(2*dt)
+
+    # Retorn both coefficients
+    return a0, a1
+
+end
+
+
+"""
+ Evaluate the coefficients c. Continuous version.
 
  Inputs:
 
@@ -63,7 +107,7 @@ end
  cj1 coefficient 
  
 """
-function Evaluate_coefs_c(g::Function, Ts)
+function Evaluate_coefs_c(g::Function, Ts::) where T
 
    # Number of intervals 
    n = length(Ts)-1
@@ -98,11 +142,56 @@ function Evaluate_coefs_c(g::Function, Ts)
 
 end
 
+"""
+ Evaluate the coefficients c. Continuous version.
+
+ Inputs:
+
+ g is a vector with discrete values
+
+ Ts is a vector of discrite times or a StepRange
+
+ Outputs:
+
+ cj0 coefficient 
+ cj1 coefficient 
+ 
+"""
+function Evaluate_coefs_c(g::Vector{T}, Ts::T1) where {T,T1}
+
+    # Basic asseertion
+    length(g)==length(Ts) || error("Evaluate_coefs_c:: vectors g and Ts must have the same length")
+
+   # Number of intervals 
+   n = length(Ts)-1
+
+   # Allocate both output vectors
+   cj0 = zeros(n)
+   cj1 = zeros(n)
+
+   # Loop over the intervals
+   for interval=1:n
+ 
+       # Evaluate coefs a for this interval
+       a0, a1 = Evaluate_coefs_a(interval,g,Ts)
+
+       # Evaluate coefs c
+       cj0[interval] = a0 - sum(cj0[1:interval-1])
+       cj1[interval] = a1 - sum(cj1[1:interval-1])
+
+   end # interval
+
+   # Return the coefficients
+   cj0, cj1
+
+end
+
+
 #
 # Evaluate all coefficients cj0 and cj1 
 # and store in a OrderedDict
 #
-function Generate_Dict_c(load_data::OrderedDict{Int64,Function},Ts::T) where T
+function Generate_Dict_c(load_data::OrderedDict{Int64,T},Ts::T1) where {T,T1}
 
     # Create the dictionary with c's for every DOF j informed in load_data
     dict_c = OrderedDict{Int64,Matrix{Float64}}()
