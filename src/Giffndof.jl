@@ -26,7 +26,7 @@ module Giffndof
     export Solve_heaviside
     export Solve_HS1
 
-    # Export some auxiliary functions
-    export Evaluate_coefs_c, Create_gtilde
+    # Export some auxiliary functions 
+    export Evaluate_coefs_c, Evaluate_gtilde
 
 end #module
