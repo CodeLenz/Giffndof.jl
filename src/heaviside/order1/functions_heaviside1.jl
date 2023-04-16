@@ -33,7 +33,7 @@ outp         -> output vector (modified in place)
 """
 function y_permanent_heaviside1!(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
                       M01::AbstractMatrix, M1::AbstractMatrix,
-                      M2::AbstractMatrix, M3::AbstractMatrix,  M001::AbstractMatrix,
+                      M2::AbstractMatrix, M001::AbstractMatrix,
                       F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix,
                       m02m1::AbstractMatrix, outp::Vector{Ts})  where Ts
 
