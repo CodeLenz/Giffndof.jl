@@ -19,42 +19,6 @@ $ Y(t_0) = U0 $
 and
 
 $ V(t_0) = V0 $
-function Example_HS1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
-
-    # Mass matrix
-    M = [2.0 0.0 0.0 ;
-         0.0 2.0 0.0 ;
-         0.0 0.0 1.0 ]
-
-    # Stiffness matrix
-    K = [6.0 -4.0  0.0 ;
-        -4.0  6.0 -2.0 ;
-         0.0 -2.0  6.0]*1E2
-
-    # Damping matrix
-    C = 1E-2*K
-
-    # Initial Conditions
-    U0  = [0.0; 0.0; 0.0]
-    V0  = [0.0; 0.0; 0.0]
-
-    # Create Ts by using tspan and dt
-    Ts = tspan[1]:dt:tspan[2]
-
-    # Loading
-    load_data = OrderedDict{Int64,Function}()
-
-    # Pass function g(t) to the dictionary
-    load_data[2] = g
-
-    #  Main function -> solve the problem
-    y, yh, yp = Solve_HS1(M,C,K,U0,V0,Ts,load_data,t0=t0)
-
-    # Return the solution
-    return y, yh, yp
-    
- end
-
 
 where $t$ is the independent variable, $Y(t)$ a $n \times 1$ vector (dependent variables), $V$ its first   derivative with respect to $t$ and $A$ its second derivative. Matrices  $M$, $C$ and $K$ are $n \times n$. Vector $F(t)$ is informed by using a dictionary.
  
@@ -204,7 +168,7 @@ One can generate the visualization for $y(t)$
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_exponential(tspan = (0.0, 10.0), dt=0.01)
+    y, yh, yp = Example_exponential(tspan=tspan,dt=dt)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -293,7 +257,7 @@ One can generate the visualization for $y(t)$
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_polynomial(tspan = (0.0, 10.0), dt=0.01)
+    y, yh, yp = Example_polynomial(tspan=tspan,dt=dt)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -383,7 +347,7 @@ One can generate the visualization for $y(t)$
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_dirac(tspan = (0.0, 10.0), dt=0.01)
+    y, yh, yp = Example_dirac(tspan=tspan,dt=dt)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -471,7 +435,7 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_heaviside(tspan = (0.0, 10.0), dt=0.01)
+    y, yh, yp = Example_heaviside(tspan=tspan,dt=dt)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -613,7 +577,7 @@ function Example_HS1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_HS1(tspan = (0.0, 10.0), dt=0.01)
+    y, yh, yp = Example_HS1(tspan=tspan,dt=dt)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
