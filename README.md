@@ -56,7 +56,7 @@ y, yh, yp = Solve_dirac(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
 ```julia
-y, yh, yp = Solve_heaviside(M,C,K,U0,V0,load_data,t0=t0)
+y, yh, yp = Solve_heaviside2(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
 Approximate solutions obtained by using first order Heaviside Series
@@ -396,7 +396,7 @@ The complete example is
 
 ```julia
 using Giffndof, OrderedCollections
-function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -424,7 +424,7 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
     load_data[2] = [1.0; 0.0; 0.0; 1.0 ; -1.0; 0.0; 0.0; 5.0 ]
 
     #  Main function -> solve the problem
-    y, yh, yp = Solve_heaviside(M,C,K,U0,V0,load_data,t0=t0)
+    y, yh, yp = Solve_heaviside2(M,C,K,U0,V0,load_data,t0=t0)
 
     # Return the solution
     return y, yh, yp
@@ -439,7 +439,7 @@ function Example_heaviside(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_heaviside(tspan=tspan,dt=dt)
+    y, yh, yp = Example_heaviside2(tspan=tspan,dt=dt)
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
