@@ -26,9 +26,9 @@ module Giffndof
     export Solve_exponential
     export Solve_polynomial
     export Solve_dirac
-    export solve_heaviside2
-    export solve_heaviside1
-    export solve_heaviside0
+    export Solve_heaviside2
+    export Solve_heaviside1
+    export Solve_heaviside0
     export Solve_HS1
 
     # Export some auxiliary functions 
