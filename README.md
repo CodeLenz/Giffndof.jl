@@ -10,15 +10,15 @@
 This repository contains the computer implementation of the solution procedures developed in **to be included** 
 for solving coupled systems of second order ODEs with constant coefficients
 
-$ M A(t) + C V(t) + K Y(t) = F(t) $
+ $M A(t) + C V(t) + K Y(t) = F(t)$
 
 with initial conditions
 
-$ Y(t_0) = U0 $
+ $Y(t_0) = U0$
 
 and
 
-$ V(t_0) = V0 $
+ $V(t_0) = V0$
 
 where $t$ is the independent variable, $Y(t)$ a $n \times 1$ vector (dependent variables), $V$ its first   derivative with respect to $t$ and $A$ its second derivative. Matrices  $M$, $C$ and $K$ are $n \times n$. Vector $F(t)$ is informed by using a dictionary.
  
@@ -78,7 +78,7 @@ There is a specific way of informing non null entries in $F(t)$ for each type of
 
 For forces described as a series of exponentials 
 
-$ f_j(t) = \sum_{k=1}^{n_k} c_{jk} \exp(i \omega_{jk} t + \phi_{jk}) $
+ $f_j(t) = \sum_{k=1}^{n_k} c_{jk} \exp(i \omega_{jk} t + \phi_{jk})$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by (possible complex values) of $c_{jk}$ and $\omega_{jk}$
 
@@ -92,7 +92,7 @@ Lets consider the first example in the reference manuscript
 
 Consider a $3$ DOFs problem subjected to a force 
 
-$ f_2(t) = 3 \sin(4t) = 3\frac{i}{2}(\exp(-4it) - \exp(4it)) $
+ $f_2(t) = 3 \sin(4t) = 3\frac{i}{2}(\exp(-4it) - \exp(4it))$
 
 such that the (complex) amplitudes are $c_{21}=3i/2$ and $c_{22}=-3i/2$ and the angular frequencies are $\omega_{21}=-4$ and $\omega_{22}=4$. Thus,
 
@@ -190,7 +190,7 @@ end
  
 For forces described as a polynomial
 
-$ f_j(t) = \sum_{k=0}^{n_k} c_{jk} (t-t_j)^k $
+ $f_j(t) = \sum_{k=0}^{n_k} c_{jk} (t-t_j)^k$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk}$ and $t_j$
 
@@ -202,7 +202,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 Consider a $3$ DOFs problem subjected to a force 
 
-$ f_2(t) = 10 t - t^2 $
+ $f_2(t) = 10 t - t^2$
 
 such that $t_2=0$,  $c_{20}=0$,  $c_{21}=10$,  $c_{22}=-1$. Thus
 
@@ -278,7 +278,7 @@ end
  
 For forces described as a series of unitary impulses
 
-$ f_j(t) = \sum_{k=0}^{n_k} c_{jk} \delta(t-t_{jk}) $
+ $f_j(t) = \sum_{k=0}^{n_k} c_{jk} \delta(t-t_{jk})$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk}$ and $t_{jk}$
 
@@ -290,7 +290,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$ s
 
-$ f_2(t) = \delta(t-1) - \delta(t-5) $
+ $f_2(t) = \delta(t-1) - \delta(t-5)$
 
 such that $c_{20}=1.0$, $t_{20}=1$, $c_{21}=-1$ and $t_{21}=5.0$
 
@@ -368,7 +368,7 @@ end
  
 For forces described as second order polynomials times heavisides
 
-$ f_j(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk}) $
+ $f_j(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t + c_{jk2} t^2) H(t-t_{jk})$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by of $c_{jk*}$ and $t_{jk}$
 
@@ -380,7 +380,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
 
-$ f_2(t) = H(t-1) - H(t-5) $
+ $f_2(t) = H(t-1) - H(t-5)$
 
 such that $c_{200}=1$, $c_{201}=0$, $c_{202}=0$, $t_{20}=1$, $c_{210}=-1$, $c_{211}=0$, $c_{212}=0$, $t_{21}=5$
 
@@ -457,7 +457,7 @@ end
  
 For forces described as First Order Heaviside Series
 
-$ \hat{f}(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t) H(t-t_{jk}) $
+ $\hat{f}(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t) H(t-t_{jk})$
 
 the user must inform the DOF $j$ as a key to a dictionary with the reference function $g(t)$
 
@@ -469,7 +469,7 @@ the user must inform the DOF $j$ as a key to a dictionary with the reference fun
 
 Consider a reference function 
 
-$ g(t) = -\cos(0.5 t) +  \sin(t) + \cos(1.5 t - 1.5) - 2\sin(t) + 2\sin(10 t)$
+ $g(t) = -\cos(0.5 t) +  \sin(t) + \cos(1.5 t - 1.5) - 2\sin(t) + 2\sin(10 t)$
 
 This function can be represented by using first order Heaviside Series. Coefficients
 $c_{jk0}$ and $c_{jk1}$ can be evaluated by using ```Evaluate_coefficients_c```
