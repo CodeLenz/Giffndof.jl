@@ -74,7 +74,7 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
     # Loop over the dictionary to find the total number of data to be cached
     ncol = 0
     for j in keys(load_data)
-        ncol += Int(length(load_data[j])/2)
+        ncol += Int(length(load_data[j])/3)
     end
 
     # Allocate caches  
@@ -94,7 +94,7 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
         data = load_data[j]
 
         # Number of data for j is 
-        nk = Int(length(data)/2)
+        nk = Int(length(data)/3)
 
         # Put 1.0 in DOF j
         e_j[j] = 1.0
