@@ -90,9 +90,9 @@ There is a specific way of informing non null entries in $F(t)$ for each type of
 
 For forces described as a series of exponentials 
 
- $f_j(t) = \sum_{k=1}^{n_k} c_{jk} \exp(i \omega_{jk} t + \phi_{jk})$
+ $f_j(t) = \sum_{k=1}^{n_k} c_{jk} \exp(i \omega_{jk} t + i \phi_{jk})$
 
-the user must inform the DOF $j$ as a key to a dictionary with entries given by (possible complex values) of $c_{jk}$ and $\omega_{jk}$
+the user must inform the DOF $j$ as a key to a dictionary with entries given by (possible complex values) of $c_{jk}$, $\omega_{jk}$ and $\phi_{jk}$
 
 ```julia
     load_data = Dict{Int64,Vector{ComplexF64}}()
@@ -106,10 +106,10 @@ Consider a $3$ DOFs problem subjected to a force
 
  $f_2(t) = 3 \sin(4t) = 3\frac{i}{2}(\exp(-4it) - \exp(4it))$
 
-such that the (complex) amplitudes are $c_{21}=3i/2$ and $c_{22}=-3i/2$ and the angular frequencies are $\omega_{21}=-4$ and $\omega_{22}=4$. Thus,
+such that the (complex) amplitudes are $c_{21}=3i/2$ and $c_{22}=-3i/2$, the angular frequencies are $\omega_{21}=-4$ and $\omega_{22}=4$ and the phases are $\phi_{21}=0$ and $\phi_{22}=0$. Thus,
 
 ```julia
-load_data[2] = [3*im/2; -3*im/2; -4.0; 4.0]
+load_data[2] = [3*im/2; -4.0; 0.0 ; -3*im/2; 4.0; 0.0]
 ```
 
 The complete example is 
@@ -149,20 +149,24 @@ function Example_exponential(t0=0.0)
     c_21 =  ampl*im/2
     c_22 = -ampl*im/2
 
-    # and angular frequencies
+    #  angular frequencies
     w_21 = -ws
     w_22 =  ws
 
+    # and phases
+    p_21 = 0.0
+    p_22 = 0.0
+
     # Create a dictionary. Each key corresponds to the DOF (j)
     # such that
-    # load_data[j] = [c_j1; w_j1; ....; c_jnk; w_jnk]
+    # load_data[j] = [c_j1; w_j1; p_j1....; c_jnk; w_jnk; p_jnk]
     # were nk is the number of exponentials used to represent the 
     # loading at DOF j
     #
     load_data = Dict{Int64,Vector{ComplexF64}}()
 
     # For our example, DOF=2 and we have two exponentials
-    load_data[2] = [c_21; w_21; c_22; w_22]
+    load_data[2] = [c_21; w_21; p_21; c_22; w_22; p_22]
 
     # Main function -> solve the problem
     y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,t0=t0)
@@ -615,7 +619,7 @@ function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     #   c_j00 c_j01 c_j02  t_jk .... c_j(nk)0 c_j(nk)1 c_j(nk)2 t_j(nk)
     load_data[2] = [-30.0; 40.0; -10.0; 1.0; 30.0; -40.0; 10.0; 3.0]
-
+    
     #  Main function -> solve the problem
     y, yh, yp = Solve_heaviside2(M,C,K,U0,V0,load_data,t0=t0)
 
