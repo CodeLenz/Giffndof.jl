@@ -230,7 +230,7 @@ The complete example is
 
 ```julia
 using Giffndof, OrderedCollections
-function Example_polynomial(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+function Example_polynomial(t0 = 0.0)
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -318,7 +318,7 @@ The complete example is
 
 ```julia
 using Giffndof, OrderedCollections
-function Example_dirac(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+function Example_dirac(t0 = 0.0)
 
 
     # Mass matrix
@@ -363,7 +363,7 @@ One can generate the visualization for $y(t)$
   function Generate_plot()
 
     # Call the example
-    y, yh, yp = Example_dirac(tspan=tspan,dt=dt)
+    y, yh, yp = Example_dirac()
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -408,7 +408,7 @@ The complete example is
 
 ```julia
 using Giffndof, OrderedCollections
-function Example_heaviside0(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+function Example_heaviside0(t0 = 0.0)
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -451,7 +451,7 @@ function Example_heaviside0(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
   function Generate_plot()
 
     # Call the example
-    y, yh, yp = Example_heaviside0(tspan=tspan,dt=dt)
+    y, yh, yp = Example_heaviside0()
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -500,7 +500,7 @@ The complete example is
 
 ```julia
 using Giffndof, OrderedCollections
-function Example_heaviside1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+function Example_heaviside1(t0 = 0.0)
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -543,7 +543,7 @@ function Example_heaviside1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
   function Generate_plot()
 
     # Call the example
-    y, yh, yp = Example_heaviside1(tspan=tspan,dt=dt)
+    y, yh, yp = Example_heaviside1()
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -593,7 +593,7 @@ The complete example is
 
 ```julia
 using Giffndof, OrderedCollections
-function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
+function Example_heaviside2(t0 = 0.0)
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
