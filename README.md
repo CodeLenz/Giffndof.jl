@@ -184,7 +184,7 @@ One can generate the visualization for $y(t)$
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_exponential(tspan=tspan,dt=dt)
+    y, yh, yp = Example_exponential()
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -273,7 +273,7 @@ One can generate the visualization for $y(t)$
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_polynomial(tspan=tspan,dt=dt)
+    y, yh, yp = Example_polynomial()
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
@@ -360,7 +360,7 @@ One can generate the visualization for $y(t)$
 
 ```julia
   using Plots
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+  function Generate_plot()
 
     # Call the example
     y, yh, yp = Example_dirac(tspan=tspan,dt=dt)
@@ -448,7 +448,7 @@ function Example_heaviside0(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 ```julia
   using Plots  
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+  function Generate_plot()
 
     # Call the example
     y, yh, yp = Example_heaviside0(tspan=tspan,dt=dt)
@@ -540,7 +540,7 @@ function Example_heaviside1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
 ```julia
   using Plots  
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
+  function Generate_plot()
 
     # Call the example
     y, yh, yp = Example_heaviside1(tspan=tspan,dt=dt)
@@ -636,7 +636,7 @@ function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
   function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
 
     # Call the example
-    y, yh, yp = Example_heaviside2(tspan=tspan,dt=dt)
+    y, yh, yp = Example_heaviside2()
 
     # Discrete times to make the plot
     tt = tspan[1]:dt:tspan[2]
