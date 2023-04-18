@@ -1,7 +1,6 @@
 using Giffndof
-include("base_data.jl")
-include("newmark.jl")
-include("make_plot.jl")
+include("../common/base_data.jl")
+include("../common/make_plot.jl")
 
 
 function Example_exponential(M,C,K,U0,V0,t0)
@@ -36,7 +35,9 @@ end
 
 
  # Run the test
- tspan  = (0.0,10.0)
- dt     =  0.01
- beta_c =  1E-6
- Make_plot( tspan, dt, Example_exponential, f_exponential!, "exponential", beta_c)
+ function Run_exponential()
+    tspan  = (0.0,10.0)
+    dt     =  0.01
+    beta_c =  1E-6
+    Make_plot( tspan, dt, Example_exponential, f_exponential!, "exponential", beta_c)
+ end
