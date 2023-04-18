@@ -24,6 +24,6 @@ function Split_sin(A,w,p)
     p_j2 =  p
 
     # Return in the same sequence used in exponential
-    [c_j1; w_j1; p_j1, c_j2; w_j2; p_j2]
+    [c_j1; w_j1; p_j1; c_j2; w_j2; p_j2]
 
 end
