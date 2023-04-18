@@ -12,6 +12,7 @@ module Giffndof
     include("common/homo.jl")
     include("common/step.jl")
     include("common/aux.jl")
+    include("common/newmark.jl")
     include("heaviside/commonh.jl")
 
     # Load solution methods
@@ -34,5 +35,9 @@ module Giffndof
 
     # Export some auxiliary functions 
     export Evaluate_coefs_c, Evaluate_gtilde, Split_sin
+    export Solve_newmark
+
+    # Include the examples
+    include("examples/exponential.jl")
 
 end #module
