@@ -11,6 +11,7 @@ module Giffndof
     # load common functions
     include("common/homo.jl")
     include("common/step.jl")
+    include("common/aux.jl")
     include("heaviside/commonh.jl")
 
     # Load solution methods
@@ -32,6 +33,6 @@ module Giffndof
     export Solve_HS1
 
     # Export some auxiliary functions 
-    export Evaluate_coefs_c, Evaluate_gtilde
+    export Evaluate_coefs_c, Evaluate_gtilde, Split_sin
 
 end #module
