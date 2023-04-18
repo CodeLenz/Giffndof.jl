@@ -13,26 +13,31 @@
 
  and f(t) is n x 1 with excitations in the form
 
-  f_j(t) = sum_k  c_jk exp( beta_jk t)
+  f_j(t) = sum_k  c_jk exp( beta_jk t + im*phi_jk)
 
- where j is the DOF, c_jk is a complex amplitude 
- and  beta_jk = omega_jk * i is a complex angular frequency.
+ where j is the DOF, c_jk is a complex amplitude, 
+ beta_jk = omega_jk * i is a complex angular frequency and phi_jk the phase.
 
  Loading information is given by using a dictionary:
 
- load_data -> dictionary with key j (gl) and data [c_j1; w_j1; c_j2; w_j2; ... c_jnk; w_jnk]
+ load_data -> dictionary with key j (gl) and 
+ data [c_j1; w_j1; phi_j1; c_j2; w_j2; phi_j2; ... c_jnk; w_jnk; phi_jnk]
 =#
 
 """
   Pre-process data to avoid some computations when evaluating the 
   permanent solution yp(t). Those computations are used many times,
-  so we evaluate them and store into two caches: 
+  so we evaluate them and store into three caches: 
 
    ``c_jk*(KD_jk \\ e_j) -> sol_jk`` 
 
- and 
-
+ 
  ``im*w_jk -> beta_jk`` 
+
+ and
+
+ ``im*phi_jk -> cphi_jk`` 
+
 
  Inputs:
 
@@ -42,13 +47,16 @@
 
  K         -> Constant matrix
 
- ``load_data`` -> dictionary with key j (gl) and data ``[c_j1; w_j1; c_j2; w_j2; ... c_jnk; w_jnk]``
+ ``load_data`` -> dictionary with key j (gl) and data ``[c_j1; w_j1; phi_j1; ... c_jnk; w_jnk; phi_jnk]``
 
  Outputs
 
  ``sol_jk``  -> complex matrix
 
  ``beta_jk`` -> complex vector
+
+ ``cphi_jk`` -> complex vector
+
 
 """
 function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
@@ -72,6 +80,7 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
     # Allocate caches  
     sol_jk  = zeros(ComplexF64,ngls,ncol)
     beta_jk = zeros(ComplexF64,ncol)
+    cphi_jk = zeros(ComplexF64,ncol)
 
     # Also allocate vetor e_j 
     e_j = zeros(ngls)
@@ -94,10 +103,13 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
         for k=1:nk
 
             # Amplitude
-            c_jk = data[2*(k-1)+1]
+            c_jk = data[3*(k-1)+1]
 
             # Angular frequency
-            w_jk = data[2*(k-1)+2]
+            w_jk = data[3*(k-1)+2]
+
+            # Phase
+            phi_jk = data[3*(k-1)+3]
 
             # Build KD_jk
             KD_jk = K + im*w_jk*C - M*(w_jk)^2 
@@ -107,6 +119,9 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
            
             # Store im*w_jk
             beta_jk[cont] = im*w_jk 
+
+            # Store im*phi_jk
+            cphi_jk[cont] = im*phi_jk 
 
             # Increment the counter
             cont += 1
@@ -119,7 +134,7 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
     end #j
 
     # Return the caches
-    return sol_jk, beta_jk
+    return sol_jk, beta_jk, cphi_jk
 
 end
 
@@ -135,9 +150,12 @@ t           -> time
 
 ``beta_jk`` -> cache computed by Process_exp
 
+``cphi_jk`` -> cache computed by Process_exp
+
 outp         -> output vector (modified in place) 
 """
-function y_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T},outp::Vector{T}) where T
+function y_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T},cphi_jk::Vector{T},
+                                  outp::Vector{T}) where T
 
     # Number of informations stored in the caches
     ncol = size(sol_jk,2)
@@ -147,7 +165,7 @@ function y_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::
 
     # Loop - Equation  
     for jk=1:ncol
-        outp .= outp .+ exp(beta_jk[jk]*t)*sol_jk[:,jk]
+        outp .= outp .+ exp(beta_jk[jk]*t + cphi_jk[jk])*sol_jk[:,jk]
     end
 
 end
@@ -164,11 +182,14 @@ t           -> time
 
 ``beta_jk`` -> cache computed by Process_exp
 
+``cphi_jk`` -> cache computed by Process_exp
+
 Output
 
 otp         -> output vector
 """
-function y_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T}) where T
+function y_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T},
+                                 cphi_jk::Vector{T} ) where T
 
     # Number of DOFs
     ngls = size(sol_jk,1)
@@ -177,7 +198,7 @@ function y_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::V
     outp = Vector{T}(undef,ngls)
 
     # Call the driver
-    y_permanent_exponential!(t,sol_jk,beta_jk,outp)
+    y_permanent_exponential!(t,sol_jk,beta_jk,cphi_jk,outp)
     
     # Return the output
     return outp
@@ -196,9 +217,12 @@ t           -> time
 
 ``beta_jk`` -> cache computed by Process_exp
 
+``cphi_jk_jk`` -> cache computed by Process_exp
+
 otp         -> output vector (modified in place) 
 """
-function dy_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T}, outp::Vector{T}) where T
+function dy_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T}, 
+                                  cphi_jk::Vector{T},outp::Vector{T}) where T
 
     # Number of informations stored in the caches
     ncol = size(sol_jk,2)
@@ -208,7 +232,7 @@ function dy_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk:
 
     # Loop - Equation
     for jk=1:ncol
-        outp .= outp .+ beta_jk[jk]*exp(beta_jk[jk]*t)*sol_jk[:,jk]
+        outp .= outp .+ beta_jk[jk]*exp(beta_jk[jk]*t + cphi_jk[jk])*sol_jk[:,jk]
     end
 
 end
@@ -230,7 +254,8 @@ Output
 
 otp         -> output vector
 """
-function dy_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T}) where T
+function dy_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T},
+                                  cphi_jk::Vector{T}) where T
 
     # Number of informations stored in the caches
     ngls = size(sol_jk,1)
@@ -239,7 +264,7 @@ function dy_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::
     outp = Vector{T}(undef,ngls)
 
     # Call the driver
-    dy_permanent_exponential!(t,sol_jk,beta_jk,outp)
+    dy_permanent_exponential!(t,sol_jk,beta_jk,cphi_jk,outp)
 
     # Return the output
     return outp
