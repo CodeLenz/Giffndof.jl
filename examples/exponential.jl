@@ -1,6 +1,6 @@
 using Giffndof
-include("../src/common/base_data.jl")
-include("../src/common/make_plot.jl")
+include("common/base_data.jl")
+include("common/make_plot.jl")
 
 
 function Example_exponential(M,C,K,U0,V0,t0)
