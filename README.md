@@ -615,7 +615,7 @@ function Example_heaviside2(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
 
     #   c_j00 c_j01 c_j02  t_jk .... c_j(nk)0 c_j(nk)1 c_j(nk)2 t_j(nk)
     load_data[2] = [-30.0; 40.0; -10.0; 1.0; 30.0; -40.0; 10.0; 3.0]
-
+    
     #  Main function -> solve the problem
     y, yh, yp = Solve_heaviside2(M,C,K,U0,V0,load_data,t0=t0)
 

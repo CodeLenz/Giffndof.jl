@@ -73,20 +73,20 @@ function y_permanent_heaviside0!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
                 T5 = c_jk0*m01m1
 
                 # T6
-                T6A = -(c_jk0)*M1
-                T6 = exp(F211*t1)*M001*(T6A)
+                T6A = -c_jk0*M1
+                T6  = exp(F211*t1)*M001*(T6A)
 
                 # T7
-                T7A = m01m1*(-c_jk0)   
+                #T7A = -T5 #m01m1*(-c_jk0)   <------------------
                 
-                T7D1 = -M1*(c_jk0)
-                T7D  = -M001*(T7D1)
+                #T7D1 = T6A #-M1*(c_jk0)  <----------
+                T7D  = -M001*(T6A)
 
                 # Final T7
-                T7 = exp(CbF*t1)*(T7A .+ T7D)
+                T7 = exp(CbF*t1)*(T7D.-T5)
 
                 # Add and use the cache
-                outp .= outp .+ H_jk*( T5 .+ T6 .+ T7)*sol_j[:,count]
+                outp .= outp .+ H_jk*(T5 .+ T6 .+ T7)*sol_j[:,count]
 
             end # if H_jk > 0.0
             
