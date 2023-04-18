@@ -38,6 +38,6 @@ module Giffndof
     export Solve_newmark
 
     # Include the examples
-    include("../examples/exponential.jl")
+    # include("../examples/exponential.jl")
 
 end #module
