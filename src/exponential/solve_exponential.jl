@@ -13,11 +13,11 @@ include("functions_exponential.jl")
 
    V(t0) = V0
 
-   for exponential excitations  ``f_j = c_jk exp (im w_jk t )``.  
+   for exponential excitations  ``f_j = c_jk exp (im w_jk t + im phi_jk)``.  
 
    Loading is informed by using a dictionary  ``load_data = Dict{Int64,Vector{ComplexF64}}()``
 
-   ``load_data[j] = [c_j1; w_j1; ....; c_jnk; w_jnk]``
+   ``load_data[j] = [c_j1; w_j1; phi_j1; ....; c_jnk; w_jnk; phi_jnk]``
 
    were nk is the number of exponentials used to represent the 
    loading at DOF j.
@@ -38,13 +38,13 @@ function Solve_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstrac
 
     
     # Pre-process - cache some expensive operations
-    sol_jk, beta_jk = Process_exponential(M, C, K, load_data)
+    sol_jk, beta_jk, cphi_jk = Process_exponential(M, C, K, load_data)
 
     # Permanent solution for a given time t - Equation 120
-    yp(t) = y_permanent_exponential(t,sol_jk,beta_jk)
+    yp(t) = y_permanent_exponential(t,sol_jk,beta_jk,cphi_jk)
 
     # Derivative of yp(t) for a given time t - Equation 121
-    dyp(t) = dy_permanent_exponential(t,sol_jk,beta_jk)
+    dyp(t) = dy_permanent_exponential(t,sol_jk,beta_jk,cphi_jk)
 
     # Evaluate F211 - Equation 65
     chol = cholesky(M)
