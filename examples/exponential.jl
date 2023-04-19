@@ -1,7 +1,6 @@
 using Giffndof
 include("common/base_data.jl")
-include("common/make_plot.jl")
-
+include("common/process.jl")
 
 function Example_exponential(M,C,K,U0,V0,t0)
 
@@ -24,7 +23,7 @@ function Example_exponential(M,C,K,U0,V0,t0)
  end   
 
 
-# Load para o Newmark
+# Load for Newmark
 function f_exponential!(t,F::Vector{T}) where T
   
     F[1] = 0.0
@@ -33,11 +32,13 @@ function f_exponential!(t,F::Vector{T}) where T
 
 end
 
-
  # Run the test
- function Run_exponential()
-    tspan  = (0.0,10.0)
-    dt     =  0.01
-    beta_c =  1E-6
-    Make_plot( tspan, dt, Example_exponential, f_exponential!, "exponential", beta_c)
+ function Run_exponential(tspan  = (0.0,10.0), dt=0.01, beta_c=1E-6)
+
+    # Process the solutions
+    T,Y,U = Process( tspan, dt, Example_exponential, f_exponential!, beta_c)
+
+    # Make the plot
+    Make_plot(T,Y,U,"exponential")
+
  end
