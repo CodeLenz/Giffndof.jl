@@ -1,6 +1,8 @@
 using Giffndof
 include("common/base_data.jl")
 include("common/process.jl")
+include("common/plot.jl")
+
 
 function Example_exponential(M,C,K,U0,V0,t0)
 

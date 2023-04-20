@@ -2,6 +2,8 @@ using Giffndof
 using OrderedCollections
 include("common/base_data.jl")
 include("common/process.jl")
+include("common/plot.jl")
+
 
 function Example_polynomial(M,C,K,U0,V0,t0)
 
