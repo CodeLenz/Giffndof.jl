@@ -80,7 +80,7 @@ A,V,U,T = Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f
                         ts::Tuple{Float64, Float64}, Δt::Float64; U0=Float64[], V0=Float64[], β=1/4, γ=1/2)
 ```
 
-where $\mathbf{A}$, $\mathbf{V}$ and $\mathbf{U}$ are $n \times n_t$ matrices and $n_t$ is the number of time steps. $\mathbf{T}$ is a $n_t \times 1$ vector containing the discrete times. The method is used to validate the solutions of each example. 
+where $\mathbf{A}$, $\mathbf{V}$ and $\mathbf{U}$ are $n \times n_t$ matrices and $n_t$ is the number of time steps. $\mathbf{T}$ is a $n_t \times 1$ vector containing the discrete times. The method is used to validate the solutions of each example (dotted lines).
 
 # Exponentials
 <details>
@@ -194,11 +194,16 @@ One can generate the visualization for $y(t)$
     display(plot(tt,yy))
 
 end
-
 ```
 
+<img src="https://github.com/CodeLenz/Giffndof.jl/tree/main/examples/plots/exponential.png" width="300">
+
+#![exponential](examples/plots/exponential.png|width=100px)
+
 </details>
- 
+
+<p>&nbsp;</p>
+
 # Polynomials
 <details>
  
@@ -286,6 +291,9 @@ One can generate the visualization for $y(t)$
 end
 ```
 </details>
+
+<p>&nbsp;</p>
+
  
 # Unitary impulse (Dirac's delta)
 <details>
@@ -377,6 +385,10 @@ end
 ```
 </details>
 
+
+<p>&nbsp;</p>
+
+
 # Zero order polynomials multiplied by Heavisides
 <details>
  
@@ -464,6 +476,9 @@ function Example_heaviside0(t0 = 0.0)
 end
 ```
 </details>
+
+
+<p>&nbsp;</p>
 
 
 # First order polynomials multiplied by Heavisides
@@ -555,6 +570,9 @@ function Example_heaviside1(t0 = 0.0)
 end
 ```
 </details>
+
+
+<p>&nbsp;</p>
 
 
 # Second order polynomials multiplied by Heavisides

@@ -7,7 +7,7 @@ function Make_plot(T::Vector{T1},Y::AbstractMatrix{T1},U::AbstractMatrix{T1},plo
 
      
     # Dimensions
-    ndofs = size(U,2)
+    ndofs = size(U,1)
 
     # Create the plot
     plot()
@@ -27,14 +27,14 @@ function Make_plot(T::Vector{T1},Y::AbstractMatrix{T1},U::AbstractMatrix{T1},plo
     # Plot Newmark solution
     #
     for i in dofs
-        plot!(T, U[:,i], linewidth = 1, title = "", legend=:outertopright, ls=:dot, palette=:thermal, 
+        plot!(T, U[i,:], linewidth = 1, title = "", legend=:outertopright, ls=:dot, palette=:thermal, 
             xaxis = L"t", yaxis = L"\mathbf{y}(t)", label=L"\tilde{y}_%$(i)(t)",dpi=500, alpha=1.0)
     end
     
     # save the picture
     cd("plots")
-    println("Saving $(plot_name).pdf at $(pwd())")
-    savefig(plot_name*".pdf")
+    println("Saving $(plot_name).png at $(pwd())")
+    savefig(plot_name*".png")
     cd("..")
 
 end
