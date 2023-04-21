@@ -196,8 +196,6 @@ One can generate the visualization for $y(t)$
 end
 ```
 
-<img src="https://github.com/CodeLenz/Giffndof.jl/tree/main/examples/plots/exponential.png" width="300">
-
 </details>
 
 <p>&nbsp;</p>
