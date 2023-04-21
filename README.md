@@ -81,7 +81,7 @@ There is a specific way of informing non null entries in $F(t)$ for each type of
 
 For forces described as a series of exponentials 
 
- $f_j(t) = \sum^{n_k}_{k=1} c_{jk} \exp(i \omega_{jk} t + i \phi_{jk})$
+ $f_j(t) = \sum_{k=1}^{n_k} c_{jk} \exp(i \omega_{jk} t + i \phi_{jk})$
 
 the user must inform the DOF $j$ as a key to a dictionary with entries given by (possible complex values) of $c_{jk}$, $\omega_{jk}$ and $\phi_{jk}$
 
