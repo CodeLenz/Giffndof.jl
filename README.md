@@ -198,8 +198,6 @@ end
 
 <img src="https://github.com/CodeLenz/Giffndof.jl/tree/main/examples/plots/exponential.png" width="300">
 
-#![exponential](examples/plots/exponential.png|width=100px)
-
 </details>
 
 <p>&nbsp;</p>
