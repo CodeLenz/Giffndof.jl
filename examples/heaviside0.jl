@@ -5,6 +5,29 @@ include("common/base_data.jl")
 include("common/process.jl")
 include("common/plot.jl")
 
+
+ # Run the test
+ function Run_heaviside0(tspan  = (0.0,10.0), dt=0.001, beta_c=1E-2)
+
+    # Process the solutions
+    T,Y,U = Process( tspan, dt, Example_heaviside0, f_heaviside0!, beta_c)
+
+    # Make the plot
+    Make_plot(T,Y,U,"heaviside0")
+
+ end
+
+
+# Loading for Newmark
+function f_heaviside0!(t,F::Vector{T}) where T
+  
+    F[1] = 0.0
+    F[2] = Giffndof.Heaviside(t,1.0) - Giffndof.Heaviside(t,5.0)
+    F[3] = 0.0
+
+end
+
+
 function Example_heaviside0(M,C,K,U0,V0,t0)
 
     #
@@ -24,22 +47,4 @@ function Example_heaviside0(M,C,K,U0,V0,t0)
  end   
 
 
-# Load for Newmark
-function f_heaviside0!(t,F::Vector{T}) where T
-  
-    F[1] = 0.0
-    F[2] = Giffndof.Heaviside(t,1.0) - Giffndof.Heaviside(t,5.0)
-    F[3] = 0.0
 
-end
-
- # Run the test
- function Run_heaviside0(tspan  = (0.0,10.0), dt=0.001, beta_c=1E-6)
-
-    # Process the solutions
-    T,Y,U = Process( tspan, dt, Example_heaviside0, f_heaviside0!, beta_c)
-
-    # Make the plot
-    Make_plot(T,Y,U,"heaviside0")
-
- end

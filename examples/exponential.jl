@@ -4,6 +4,27 @@ include("common/process.jl")
 include("common/plot.jl")
 
 
+ # Run the test
+ function Run_exponential(tspan  = (0.0,10.0), dt=0.001, beta_c=1E-2)
+
+    # Process the solutions
+    T,Y,U = Process( tspan, dt, Example_exponential, f_exponential!, beta_c)
+
+    # Make the plot
+    Make_plot(T,Y,U,"exponential")
+
+ end
+
+# Loading for Newmark
+function f_exponential!(t,F::Vector{T}) where T
+  
+    F[1] = 0.0
+    F[2] = 3*sin(4*t)
+    F[3] = 0.0
+
+end
+
+
 function Example_exponential(M,C,K,U0,V0,t0)
 
 
@@ -25,22 +46,5 @@ function Example_exponential(M,C,K,U0,V0,t0)
  end   
 
 
-# Load for Newmark
-function f_exponential!(t,F::Vector{T}) where T
-  
-    F[1] = 0.0
-    F[2] = 3*sin(4*t)
-    F[3] = 0.0
 
-end
 
- # Run the test
- function Run_exponential(tspan  = (0.0,10.0), dt=0.01, beta_c=1E-6)
-
-    # Process the solutions
-    T,Y,U = Process( tspan, dt, Example_exponential, f_exponential!, beta_c)
-
-    # Make the plot
-    Make_plot(T,Y,U,"exponential")
-
- end

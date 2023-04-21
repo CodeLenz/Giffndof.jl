@@ -33,6 +33,7 @@ function Make_plot(T::Vector{T1},Y::AbstractMatrix{T1},U::AbstractMatrix{T1},plo
     
     # save the picture
     cd("plots")
+    println("Saving $(plot_name).pdf at $(pwd())")
     savefig(plot_name*".pdf")
     cd("..")
 

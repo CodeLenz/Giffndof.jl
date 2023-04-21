@@ -51,7 +51,7 @@ function f_dirac!(t,F::Vector{T}) where T
 end
 
  # Run the test
- function Run_dirac(tspan=(0.0,10.0), dt=0.001, beta_c=1E-6)
+ function Run_dirac(tspan=(0.0,10.0), dt=0.001, beta_c=1E-2)
 
     # Process the solutions
     T,Y,U = Process(tspan, dt, Example_dirac, f_dirac!, beta_c)

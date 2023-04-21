@@ -5,6 +5,29 @@ include("common/process.jl")
 include("common/plot.jl")
 
 
+ # Run the test
+ function Run_polynomial(tspan  = (0.0,10.0), dt=0.001, beta_c=1E-6)
+
+    # Process the solutions
+    T,Y,U = Process( tspan, dt, Example_polynomial, f_polynomial!, beta_c)
+
+    # Make the plot
+    Make_plot(T,Y,U,"polynomial")
+
+ end
+
+
+# Load for Newmark
+function f_polynomial!(t,F::Vector{T}) where T
+  
+    F[1] = 0.0
+    F[2] = 10*t - t^2
+    F[3] = 0.0
+
+end
+
+
+
 function Example_polynomial(M,C,K,U0,V0,t0)
 
     # Create a dictionary. Each key corresponds to the DOF (j)
@@ -23,22 +46,3 @@ function Example_polynomial(M,C,K,U0,V0,t0)
  end   
 
 
-# Load for Newmark
-function f_polynomial!(t,F::Vector{T}) where T
-  
-    F[1] = 0.0
-    F[2] = 10*t - t^2
-    F[3] = 0.0
-
-end
-
- # Run the test
- function Run_polynomial(tspan  = (0.0,10.0), dt=0.01, beta_c=1E-6)
-
-    # Process the solutions
-    T,Y,U = Process( tspan, dt, Example_polynomial, f_polynomial!, beta_c)
-
-    # Make the plot
-    Make_plot(T,Y,U,"polynomial")
-
- end

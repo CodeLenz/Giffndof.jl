@@ -38,10 +38,7 @@ Pkg.add("OrderedCollections")
 
 ***Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented***
 
-There are seven main methods being exported, depending on the type
-of excitation:
-
-Analytical solutions
+The following methods are exported, depending on the type of excitation:
 
 ```julia
 y, yh, yp = Solve_exponential(M,C,K,U0,V0,load_data,t0=t0)
@@ -67,12 +64,6 @@ y, yh, yp = Solve_heaviside1(M,C,K,U0,V0,load_data,t0=t0)
 y, yh, yp = Solve_heaviside2(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
-Approximate solutions obtained by using first order Heaviside Series
-
-```julia
-y, yh, yp = Solve_HS1(M,C,K,U0,V0,Ts,load_data,t0=t0)
-```
-
 where $y$ is the complete solution, $y_h$ the homogeneous solution and $y_p$ the permanent solution. Those solutions are functions and can be evaluated by simply passing a given time 
 
 ```julia
@@ -82,7 +73,7 @@ y(0.1)
 for example.
 
 
-There is a specific way of informing non null entries in $F(t)$ for each type of excitation. 
+There is a specific way of informing non null entries in $F(t)$ for each type of excitation. Examples to each one of the solution methods are provided in the following. Scripts to generate the plots of each example are avaliable in directory [examples](examples/) of this repository.
 
 
 ## Exponentials
@@ -652,233 +643,3 @@ end
 ```
 </details>
 
-
-## First Order Heaviside Series
-<details>
- 
-For forces described as First Order Heaviside Series
-
- $\hat{f}(t) = \sum_{k=0}^{n_k} (c_{jk0} + c_{jk1} t) H(t-t_{jk})$
-
-the user must inform the DOF $j$ as a key to a dictionary with the reference function $g(t)$
-
-```julia
-    load_data = Dict{Int64,Function}()
-```
-
-for continuous functions or a set of discrete values 
-
-```julia
-    load_data = Dict{Int64,Vector{Float64}}()
-```
-
-### Example
-
-Consider a reference function 
-
- $g(t) = -\cos(0.5 t) +  \sin(t) + \cos(1.5 t - 1.5) - 2\sin(t) + 2\sin(10 t)$
-
-This function can be represented by using first order Heaviside Series. Coefficients
-$c_{jk0}$ and $c_{jk1}$ can be evaluated by using ```Evaluate_coefficients_c```
-
-Consider the example
-
-```julia
-#
-# Reference Function 
-#
-function g(t)
-    -cos(0.5*t) + sin(t)  + cos(1.5*t - 1.5) -2*sin(2*t) + 2*sin(10*t)  
-end
-  
-#
-# Show the reconstruction of g by using first order Heaviside Series
-# Discrete times Ts can be informed as a vector 
-# 
-# Ts = [0.0; 0.1; 0.2; 0.3; ..... ; 10.0]
-#
-# or as a StepRange
-# 
-# Ts = 0.0:0.1:10.0
-#
-# The time step between two discrete times do not have to be the same.
-#
-using Plots
-function Example_gtilde()
-
-   # Create a vector with discrete times and compare the 
-   # original function and the approximate function
-   Ts = 0.0:0.01:10.0
-
-   # Evaluate coefficients c0 and c1 for g and dt
-   c0, c1 = Evaluate_coefs_c(g,Ts)
-
-   # Create a function to represent g(t) at any t
-   gtilde(t) = Evaluate_gtilde(t,c0,c1,Ts)
-
-   # Plot both functions
-   plot(Ts,g.(Ts),label="Original")
-   plot!(Ts,gtilde.(Ts),label="Approximation")
-
-end
-``` 
-
-The user does not have to explicitly construct the approximation, such that 
-previous example is important to understand and to visualize the quality 
-of the approximation.
-
-### Example
-
-Consider the same function $g(t)$ used in the previous example
-
-```julia
-function g(t)
-    -cos(0.5*t) + sin(t)  + cos(1.5*t - 1.5) -2*sin(2*t) + 2*sin(10*t)  
-end
-```
-
-```julia
-function Example_HS1(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
-
-    # Mass matrix
-    M = [2.0 0.0 0.0 ;
-         0.0 2.0 0.0 ;
-         0.0 0.0 1.0 ]
-
-    # Stiffness matrix
-    K = [6.0 -4.0  0.0 ;
-        -4.0  6.0 -2.0 ;
-         0.0 -2.0  6.0]*1E2
-
-    # Damping matrix
-    C = 1E-6*K
-
-    # Initial Conditions
-    U0  = [0.0; 0.0; 0.0]
-    V0  = [0.0; 0.0; 0.0]
-
-    # Create Ts by using tspan and dt
-    Ts = tspan[1]:dt:tspan[2]
-
-    # Loading
-    load_data = OrderedDict{Int64,Function}()
-
-    # Pass function g(t) to the dictionary
-    load_data[2] = g
-
-    #  Main function -> solve the problem
-    y, yh, yp = Solve_HS1(M,C,K,U0,V0,Ts,load_data,t0=t0)
-
-    # Return the solution
-    return y, yh, yp
-    
- end
-
-```
-
-
- One can generate the visualization for $y(t)$
-
-```julia
-  using Plots  
-  function Generate_plot(tspan = (0.0, 10.0), dt=0.01)
-
-    # Call the example
-    y, yh, yp = Example_HS1(tspan=tspan,dt=dt)
-
-    # Discrete times to make the plot
-    tt = tspan[1]:dt:tspan[2]
-      
-    # Reshape to plot
-    ndofs = size(y(0.0),1)
-    yy = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
-
-    # Plot
-    display(plot(tt,yy))
-
-end
-```
-
-
-Let's now consider the case of discrete excitations
-
-Generate a random excitation at times given by Ts and visualize
-the approximation.
-
-```julia
- using StableRNGs
- using Plots
-function Example_gtilde_discrete()
-
-   # Create a vector with discrete times and compare the 
-   # original function and the approximate function
-   Ts = 0.0:1.0:10.0
-
-   # Generate a random load at these discrete times
-   # Let's use StableRNG to make it easier to 
-   # compare
-   rng = StableRNG(123)
-   vg = randn(rng,length(Ts))
-
-   # Evaluate coefficients c0 and c1 for g and dt
-   c0, c1 = Evaluate_coefs_c(vg,Ts)
-
-   # Create a function to represent g(t) at any t
-   gtilde(t) = Evaluate_gtilde(t,c0,c1,Ts)
-
-   # Plot both functions
-   scatter(Ts,vg,label="Original",markershape=:circle)
-   scatter!(Ts,gtilde.(Ts),label="Approximation",markershape=:star5)
-
-end
-``` 
-
-Solve a problem using the first order Heaviside Series 
-
-```julia
- using StableRNGs
- function Example_HS1_discrete(;tspan = (0.0, 10.0), dt=0.01, t0 = 0.0)
-
-    # Mass matrix
-    M = [2.0 0.0 0.0 ;
-         0.0 2.0 0.0 ;
-         0.0 0.0 1.0 ]
-
-    # Stiffness matrix
-    K = [6.0 -4.0  0.0 ;
-        -4.0  6.0 -2.0 ;
-         0.0 -2.0  6.0]*1E2
-
-    # Damping matrix
-    C = 1E-6*K
-
-    # Initial Conditions
-    U0  = [0.0; 0.0; 0.0]
-    V0  = [0.0; 0.0; 0.0]
-
-    # Create Ts by using tspan and dt
-    Ts = tspan[1]:dt:tspan[2]
-
-    # Generate a random load at these discrete times
-    # Let's use StableRNG to make it easier to 
-    # compare
-    rng = StableRNG(123)
-    vg = randn(rng,length(Ts))
-
-    # Loading
-    load_data = OrderedDict{Int64,Vector{Float64}}()
-
-    # Pass vector to the dictionary
-    load_data[2] = vg
-
-    #  Main function -> solve the problem
-    y, yh, yp = Solve_HS1(M,C,K,U0,V0,Ts,load_data,t0=t0)
-
-    # Return the solution
-    return y, yh, yp
-    
- end
-```
-
-
-</details>
