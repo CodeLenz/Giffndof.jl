@@ -46,3 +46,6 @@ function Example_polynomial(M,C,K,U0,V0,t0)
  end   
 
 
+ println("You can run the example with Run_polynomial(tspan  = (0.0,10.0), dt=0.001, beta_c=1E-2)")
+
+

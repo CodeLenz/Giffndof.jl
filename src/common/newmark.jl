@@ -89,15 +89,15 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     # tspan / dt + 1.
     ndofs = nfull
     A_t = Vector{Float64}(undef,nt+1)
-    A_U = Array{Float64}(undef,nt+1,ndofs)
-    A_V = Array{Float64}(undef,nt+1,ndofs)
-    A_A = Array{Float64}(undef,nt+1,ndofs)
+    A_U = Array{Float64}(undef,ndofs,nt+1)
+    A_V = Array{Float64}(undef,ndofs,nt+1)
+    A_A = Array{Float64}(undef,ndofs,nt+1)
 
     # Store initial values (time zero)
     A_t[1]    = t0
-    A_U[1,:] .= U0[:]
-    A_V[1,:] .= V0[:]
-    A_A[1,:] .= A0[:]
+    A_U[:,1] .= U0[:]
+    A_V[:,1] .= V0[:]
+    A_A[:,1] .= A0[:]
 
     # Main loop
     count = 2
@@ -111,9 +111,9 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
             
            # Store values at t+Δt
             A_t[count]    = t + Δt
-            A_U[count,:] .= U[:]
-            A_V[count,:] .= V[:]
-            A_A[count,:] .= A[:]
+            A_U[:,count] .= U[:]
+            A_V[:,count] .= V[:]
+            A_A[:,count] .= A[:]
             count += 1
 
             U0 .= U
@@ -125,5 +125,3 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     return A_U, A_V, A_A, A_t
 
 end
-
-

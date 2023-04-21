@@ -73,10 +73,16 @@ y(0.1)
 for example.
 
 
-There is a specific way of informing non null entries in $F(t)$ for each type of excitation. Examples to each one of the solution methods are provided in the following. Scripts to generate the plots of each example are avaliable in directory [examples](examples/) of this repository.
+There is a specific way of informing non null entries in $F(t)$ for each type of excitation. Examples to each one of the solution methods are provided in the following. Scripts to generate the plots of each example are avaliable in directory [examples](examples/) of this repository. A basic subroutine to compute the complete solution by using the Newmark-beta method is provided
 
+```julia
+A,V,U,T = Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!::Function, 
+                        ts::Tuple{Float64, Float64}, Δt::Float64; U0=Float64[], V0=Float64[], β=1/4, γ=1/2)
+```
 
-## Exponentials
+where $\mathbf{A}$, $\mathbf{V}$ and $\mathbf{U}$ are $n \times n_t$ matrices and $n_t$ is the number of time steps. $\mathbf{T}$ is a $n_t \times 1$ vector containing the discrete times. The method is used to validate the solutions of each example. 
+
+# Exponentials
 <details>
 
 For forces described as a series of exponentials 
@@ -91,7 +97,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
 
 Lets consider the first example in the reference manuscript
 
-### Example
+## Example
 
 Consider a $3$ DOFs problem subjected to a force 
 
@@ -190,9 +196,10 @@ One can generate the visualization for $y(t)$
 end
 
 ```
+
 </details>
  
-## Polynomials
+# Polynomials
 <details>
  
 For forces described as a polynomial
@@ -205,7 +212,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example
+## Example
 
 Consider a $3$ DOFs problem subjected to a force 
 
@@ -280,7 +287,7 @@ end
 ```
 </details>
  
-## Unitary impulse (Dirac's delta)
+# Unitary impulse (Dirac's delta)
 <details>
  
 For forces described as a series of unitary impulses
@@ -293,7 +300,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example
+## Example
 
 Consider a $3$ DOFs problem subjected to two oposite unitary impulses at $t=1$ and $t=5$ s
 
@@ -370,7 +377,7 @@ end
 ```
 </details>
 
-## Zero order polynomials multiplied by Heavisides
+# Zero order polynomials multiplied by Heavisides
 <details>
  
 For forces described as first order polynomials times heavisides
@@ -383,7 +390,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example
+## Example
 
 Consider a $3$ DOFs problem subjected to two oposite unitary steps at $t=1$ and $t=5$ s
 
@@ -459,8 +466,7 @@ end
 </details>
 
 
-
-## First order polynomials multiplied by Heavisides
+# First order polynomials multiplied by Heavisides
 <details>
  
 For forces described as first order polynomials times heavisides
@@ -473,7 +479,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example
+## Example
 
 Consider a $3$ DOFs problem subjected to a linear ramp from $t=1$ to $t=5$ s and a constant value for $t>=5$.
 
@@ -551,7 +557,7 @@ end
 </details>
 
 
-## Second order polynomials multiplied by Heavisides
+# Second order polynomials multiplied by Heavisides
 <details>
  
 For forces described as second order polynomials times heavisides
@@ -564,7 +570,7 @@ the user must inform the DOF $j$ as a key to a dictionary with entries given by 
     load_data = Dict{Int64,Vector{Float64}}()
 ```
 
-### Example
+## Example
 
 Consider a $3$ DOFs problem subjected a "bump" between $t=1$ and $t=3$ s and zero elsewere.
 
