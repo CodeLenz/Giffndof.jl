@@ -6,7 +6,7 @@ module Giffndof
     end
 
     # load packages
-    using LinearAlgebra, OrderedCollections #, QuadGK
+    using LinearAlgebra, OrderedCollections, QuadGK
 
     # load common functions
     include("common/homo.jl")
