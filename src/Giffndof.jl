@@ -37,7 +37,4 @@ module Giffndof
     export Evaluate_coefs_c, Evaluate_gtilde, Split_sin
     export Solve_newmark
 
-    # Include the examples
-    # include("../examples/exponential.jl")
-
 end #module
