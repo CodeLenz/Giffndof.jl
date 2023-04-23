@@ -9,7 +9,7 @@ include("common/plot.jl")
  function Run_polynomial(tspan  = (0.0,10.0), dt=0.001, beta_c=1E-6)
 
     # Process the solutions
-    T,Y,U = Process( tspan, dt, Example_polynomial, f_polynomial!, beta_c)
+    T,Y,U = Process( tspan, dt, Example_polynomial, f_polynomial!,Problem_Data,  beta_c)
 
     # Make the plot
     Make_plot(T,Y,U,"polynomial")

@@ -1,11 +1,12 @@
-function Process(tspan::Tuple{Float64,Float64}, dt::Float64, Example::Function, f!::Function, 
+function Process(tspan::Tuple{Float64,Float64}, dt::Float64, Example::Function, 
+                 f!::Function, FData::Function,
                  beta_c = 1E-2)
 
     # Generate the discrete times
     tt = tspan[1]:dt:tspan[2]
 
     # Load Problem data
-    M,C,K,U0,V0,t0 = Problem_Data(beta_c)
+    M,C,K,U0,V0,t0 = FData(beta_c)
 
     # Solve the problem
     y, _ =  Example(M,C,K,U0,V0,t0)

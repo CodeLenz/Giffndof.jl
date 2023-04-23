@@ -10,7 +10,7 @@ include("common/plot.jl")
  function Run_heaviside1(tspan  = (0.0,10.0), dt=0.001, beta_c=1E-2)
 
     # Process the solutions
-    T,Y,U = Process( tspan, dt, Example_heaviside1, f_heaviside1!, beta_c)
+    T,Y,U = Process( tspan, dt, Example_heaviside1, f_heaviside1!,Problem_Data, beta_c)
 
     # Make the plot
     Make_plot(T,Y,U,"heaviside1")
