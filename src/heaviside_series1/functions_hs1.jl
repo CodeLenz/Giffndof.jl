@@ -126,7 +126,7 @@ function Evaluate_coefs_cH1(g::Function, Ts::T) where T
        tL = Ts[interval+1]
        
        # Evaluate coefs a for this interval
-       a0, a1 = Evaluate_coefs_a(g,tl,tL)
+       a0, a1 = Evaluate_coefs_aH1(g,tl,tL)
 
        # Evaluate coefs c
        cj0[interval] = a0 - sum(cj0[1:interval-1])
