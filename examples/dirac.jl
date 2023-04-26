@@ -3,6 +3,7 @@ using OrderedCollections
 include("common/base_data.jl")
 include("common/process.jl")
 include("common/plot.jl")
+include("common/impulse.jl")
 
 function Example_dirac(M,C,K,U0,V0,t0)
 
@@ -21,20 +22,6 @@ function Example_dirac(M,C,K,U0,V0,t0)
     
  end   
 
-
-# Emulate dirac
-function Impulse(t,t0,eps,A)
-
-    a = 1/(2*eps)
-    val = 0.0
-
-    if t0-eps <= t <= t0+eps
-        val = A*a*(1+cos(pi*(t-t0)/eps))
-    end
-
-    return val
-
-end
 
 # Load for Newmark
 function f_dirac!(t,F::Vector{T}) where T

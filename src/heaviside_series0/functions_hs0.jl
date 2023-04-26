@@ -14,13 +14,12 @@
  Outputs:
 
  a0 coefficient 
- a1 coefficient 
 
 """
-function Evaluate_coefs_aH1(g::Function, tl::Float64, tL::Float64)
+function Evaluate_coefs_aH0(g::Function, tl::Float64, tL::Float64)
 
     # Testing purposes
-    tL > tl || error("Evaluate_coefs_aH1:: tl must be smaller than tL")
+    tL > tl || error("Evaluate_coefs_aH0:: tl must be smaller than tL")
 
     # Values of g(t) at the extremes of the interval
     gl = g(tl)
@@ -29,18 +28,15 @@ function Evaluate_coefs_aH1(g::Function, tl::Float64, tL::Float64)
     # Evaluate dt for this interval
     dt = tL-tl
 
-    # Coeficient a1
-    a1 = (gL-gl)/dt
-
     # Integral of g in the interval. 
     # Evalute using quadgk package.
     integral = quadgk(g,tl,tL)[1] 
 
     # Coeficient a0
-    a0 = integral/dt - a1*(tL^2 - tl^2)/(2*dt)
+    a0 = integral/dt 
 
-    # Retorn both coefficients
-    return a0, a1
+    # Return a0
+    return a0
 
 end
 
@@ -61,10 +57,9 @@ end
  Outputs:
 
  a0 coefficient 
- a1 coefficient 
 
 """
-function Evaluate_coefs_aH1(interval::Int64,g::Vector{T}, Ts::T1) where {T,T1}
+function Evaluate_coefs_aH0(interval::Int64,g::Vector{T}, Ts::T1) where {T,T1}
 
     # Recover the times
     tl = Ts[interval]
@@ -77,17 +72,14 @@ function Evaluate_coefs_aH1(interval::Int64,g::Vector{T}, Ts::T1) where {T,T1}
     # Evaluate dt for this interval
     dt = tL-tl
 
-    # Coeficient a1
-    a1 = (gL-gl)/dt
-
     # Integral of g in the interval. 
     integral = dt*(gl + 0.5*(gL-gl)) 
 
     # Coeficient a0
-    a0 = integral/dt - a1*(tL^2 - tl^2)/(2*dt)
+    a0 = integral/dt
 
-    # Retorn both coefficients
-    return a0, a1
+    # Return a0
+    return a0
 
 end
 
@@ -104,10 +96,9 @@ end
  Outputs:
 
  cj0 coefficient 
- cj1 coefficient 
  
 """
-function Evaluate_coefs_cH1(g::Function, Ts::T) where T
+function Evaluate_coefs_cH0(g::Function, Ts::T) where T
 
    # Number of intervals 
    n = length(Ts)-1
@@ -125,25 +116,24 @@ function Evaluate_coefs_cH1(g::Function, Ts::T) where T
        # Final time at this interval
        tL = Ts[interval+1]
        
-       # Evaluate coefs a for this interval
-       a0, a1 = Evaluate_coefs_a(g,tl,tL)
+       # Evaluate coef a0 for this interval
+       a0 = Evaluate_coefs_aH0(g,tl,tL)
 
-       # Evaluate coefs c
+       # Evaluate coef c
        cj0[interval] = a0 - sum(cj0[1:interval-1])
-       cj1[interval] = a1 - sum(cj1[1:interval-1])
-
+    
        # Update tl
        tl = tL
 
    end # interval
 
-   # Return the coefficients
-   cj0, cj1
+   # Return coef cj0
+   cj0
 
 end
 
 """
- Evaluate the coefficients c. Continuous version.
+ Evaluate the coefficients c. Discrete
 
  Inputs:
 
@@ -154,35 +144,32 @@ end
  Outputs:
 
  cj0 coefficient 
- cj1 coefficient 
  
 """
-function Evaluate_coefs_cH1(g::Vector{T}, Ts::T1) where {T,T1}
+function Evaluate_coefs_cH0(g::Vector{T}, Ts::T1) where {T,T1}
 
     # Basic asseertion
-    length(g)==length(Ts) || error("Evaluate_coefs_cH1:: vectors g and Ts must have the same length")
+    length(g)==length(Ts) || error("Evaluate_coefs_cH0:: vectors g and Ts must have the same length")
 
    # Number of intervals 
    n = length(Ts)-1
 
-   # Allocate both output vectors
+   # Allocate output vector
    cj0 = zeros(n)
-   cj1 = zeros(n)
 
    # Loop over the intervals
    for interval=1:n
  
-       # Evaluate coefs a for this interval
-       a0, a1 = Evaluate_coefs_aH1(interval,g,Ts)
+       # Evaluate coef a0 for this interval
+       a0 = Evaluate_coefs_aH0(interval,g,Ts)
 
        # Evaluate coefs c
        cj0[interval] = a0 - sum(cj0[1:interval-1])
-       cj1[interval] = a1 - sum(cj1[1:interval-1])
-
+     
    end # interval
 
    # Return the coefficients
-   cj0, cj1
+   cj0
 
 end
 
@@ -191,19 +178,19 @@ end
 # Evaluate all coefficients cj0 and cj1 
 # and store in a OrderedDict
 #
-function Generate_Dict_cH1(load_data::OrderedDict{Int64,T},Ts::T1) where {T,T1}
+function Generate_Dict_cH0(load_data::OrderedDict{Int64,T},Ts::T1) where {T,T1}
 
     # Create the dictionary with c's for every DOF j informed in load_data
-    dict_c = OrderedDict{Int64,Matrix{Float64}}()
+    dict_c = OrderedDict{Int64,Vector{Float64}}()
 
     # Loop over load_data
     for j in keys(load_data)
 
         # Evaluate the Coefficients c
-        cj0, cj1 = Evaluate_coefs_cH1(load_data[j], Ts)
+        cj0 = Evaluate_coefs_cH0(load_data[j], Ts)
 
         # Store in the new dictionary
-        dict_c[j] = [cj0 cj1]
+        dict_c[j] = cj0
         
     end #j
 
@@ -218,9 +205,9 @@ end
 #
 """
  Evaluate the approximation for a given function g(t) at t. 
- This approximation is built by using the Heaviside Series with linear polynomials
+ This approximation is built by using the Heaviside Series with cte values (order zero)
  at each interval. The purpose of this subroutine is for verification purposes only,
- since the evaluation of the response y⁽¹⁾(t) is performed by using the coefficients
+ since the evaluation of the response y⁽⁰⁾(t) is performed by using the coefficients
  c only.
 
  Inputs:
@@ -229,8 +216,6 @@ end
 
  cj0 is a vector of coefficients (obtained by using Evaluate_coefs_c)
 
- cj1 is a vector of coefficients (obtained by using Evaluate_coefs_c)
-
  Ts is a vector or StepRange with the discrete times used to evaluate cj0 and cj1
 
  Output:
@@ -238,13 +223,13 @@ end
  the approximation at
  
 """
-function Evaluate_gtildeH1(t::Float64, cj0::Vector{Float64}, cj1::Vector{Float64}, Ts::T) where T
+function Evaluate_gtildeH0(t::Float64, cj0::Vector{Float64}, Ts::T) where T
 
    # Number of intervals in Ts
    n = length(Ts)-1
 
    # Basic test
-   n>1 || error("Evaluate_gtildeh1:: you must inform at least two values in Ts")
+   n>1 || error("Evaluate_gtildeH0:: you must inform at least two values in Ts")
 
    # Inicialize the output vector
    saida = 0.0
@@ -263,7 +248,7 @@ function Evaluate_gtildeH1(t::Float64, cj0::Vector{Float64}, cj1::Vector{Float64
         tl = Ts[interval]
           
         # Add the contribution for this interval
-        saida += Heaviside(t,tl)*(cj0[interval] + cj1[interval]*t)
+        saida += Heaviside(t,tl)*(cj0[interval])
    
     end # interval
    
@@ -288,11 +273,7 @@ CbF = Cb - F211
 
 M01 = M0^(-1)
 
-M02 = M0^(-2)
-
 M1 = F211^(-1)
-
-M2 = F211^(-2)
 
 M001 = Cb2F^(-1)
 
@@ -300,20 +281,13 @@ F211  -> constant matrix
 
 m01m1 = M01*M1
 
-m01m2 = M01*M2
-
-m02m1 = M02*M1
-
-m02m2 = M02*M2
-
 outp         -> output vector (modified in place) 
 """
-function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
+function y_permanent_HS0!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
                       CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M02::AbstractMatrix,  M1::AbstractMatrix,
-                      M2::AbstractMatrix,   M001::AbstractMatrix,
-                      F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix,
-                      m02m1::AbstractMatrix, m02m2::AbstractMatrix,
+                      M01::AbstractMatrix,  M1::AbstractMatrix,
+                      M001::AbstractMatrix,
+                      F211::AbstractMatrix, m01m1::AbstractMatrix, 
                       outp::Vector{Tp})  where {T,Tp}
 
     
@@ -342,15 +316,13 @@ function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{I
         count = 1
 
         # Recover coefficients c for this j
-        cj0 = @view dict_c[j][:,1]
-        cj1 = @view dict_c[j][:,2]
-   
+        cj0 = @view dict_c[j]
+        
         # Loop over k just for valid intervals in Ts
         for k=1:np
 
             # Polynomial Coefficients
             c_jk0 = cj0[k]
-            c_jk1 = cj1[k]
             
             # offset (initial time of this interval)
             t_jk = Ts[k]
@@ -358,36 +330,22 @@ function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{I
             # Common term
             t1 = t_jk - t
 
-            # T2
-            T2 = t*(c_jk1*m01m1) 
-
-            # T4
-            T4 = -c_jk1*m02m1
- 
             # T5
-            T5 = -c_jk1*m01m2 .+ c_jk0*m01m1
+            T5 =  c_jk0*m01m1
 
             # T6
-            T6A = -(c_jk1*t_jk + c_jk0)*M1
-            T6B =  (c_jk1)*M2
-            T6 = exp(F211*t1)*M001*(T6A .+ T6B)
+            T6A = -(c_jk0)*M1
+            T6 = exp(F211*t1)*M001*(T6A)
 
             # T7
-            T7A1 = m01m1*(-c_jk1*t_jk -c_jk0)   
-            T7A2 = m01m2*(c_jk1) 
-            T7A  = T7A1 .+ T7A2
-
-            T7B =  m02m1*(c_jk1)
-           
-            T7D1 = -M1*(c_jk1*t_jk + c_jk0)
-            T7D2 =  M2*(c_jk1)
-            T7D  = -M001*(T7D1 .+ T7D2)
+            T7A = m01m1*(-c_jk0)   
+            T7D = -M1*(c_jk0)
 
             # Final T7
-            T7 = exp(CbF*t1)*(T7A .+ T7B .+ T7D)
+            T7 = exp(CbF*t1)*(T7A  .+ T7D)
 
             # Add and use the cache
-            outp .= outp .+ (T2 .+ T4 .+ T5 .+ T6 .+ T7)*sol_j[:,count]
+            outp .= outp .+ (T5 .+ T6 .+ T7)*sol_j[:,count]
 
         end #k
 
@@ -414,11 +372,7 @@ CbF = Cb - F211
 
 M01 = M0^(-1)
 
-M02 = M0^(-2)
-
 M1 = F211^(-1)
-
-M2 = F211^(-2)
 
 M001 = Cb2F^(-1)
 
@@ -426,20 +380,13 @@ F211  -> constant matrix
 
 m01m1 = M01*M1
 
-m01m2 = M01*M2
-
-m02m1 = M02*M1
-
-m02m2 = M02*M2
-
 outp         -> output vector (modified in place) 
 """
-function y_permanent_HS1(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
+function y_permanent_HS0(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
                       CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M02::AbstractMatrix,  M1::AbstractMatrix,
-                      M2::AbstractMatrix,   M001::AbstractMatrix,
-                      F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix,
-                      m02m1::AbstractMatrix, m02m2::AbstractMatrix)  where {T}
+                      M01::AbstractMatrix, M1::AbstractMatrix,
+                      M001::AbstractMatrix,
+                      F211::AbstractMatrix, m01m1::AbstractMatrix)  where {T}
 
 
 
@@ -450,7 +397,7 @@ function y_permanent_HS1(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{In
     outp = Vector{ComplexF64}(undef,ngls)
 
     # Call the driver
-    y_permanent_HS1!(t,sol_j,dict_c,Ts,CbF,M01,M02,M1,M2,M001,F211,m01m1,m01m2,m02m1,m02m2,outp)
+    y_permanent_HS0!(t,sol_j,dict_c,Ts,CbF,M01,M1,M001,F211,m01m1,outp)
 
     return outp
 

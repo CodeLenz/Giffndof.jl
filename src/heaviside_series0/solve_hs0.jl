@@ -1,5 +1,5 @@
 # Load solution procedures
-include("functions_hs1.jl")
+include("functions_hs0.jl")
 
 """
    Solve the sytem of second order ODEs 
@@ -12,7 +12,7 @@ include("functions_hs1.jl")
 
    V(t0) = V0
 
-   when excitations are described by using first order Heaviside series built by 
+   when excitations are described by using zero order Heaviside series built by 
    using known reference functions ``g(t)`` or a discrete set of values of g.
 
    Loading is informed by using a dictionary  ``load_data = OrderedDict{Int64,Function}()``
@@ -40,10 +40,9 @@ include("functions_hs1.jl")
      
 
 """
-function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
+function Solve_HS0(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},
                    U0::AbstractVector{T},V0::AbstractVector{T}, Ts::T0,
                    load_data::OrderedDict{Int64,T1}; t0=0.0) where {T0,T,T1}
-
 
 
     # Evaluate F211 
@@ -56,25 +55,19 @@ function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{
     CbF = Cb .- F211
     FCb = -CbF
     M01 = CbF^(-1)
-    M02 = CbF^(-2)
     M1 = F211^(-1)
-    M2 = F211^(-2)
     Cb2F = Cb .- 2*F211
     M001 = (Cb2F)^(-1)
     m01m1 = M01*M1
-    m01m2 = M01*M2
-    m02m1 = M02*M1
-    m02m2 = M02*M2
 
     # Pre-process 
     sol_j = Process_heaviside(M,load_data)
 
     # Create dict_c
-    dict_c = Generate_Dict_cH1(load_data,Ts)
+    dict_c = Generate_Dict_cH0(load_data,Ts)
 
     # Evaluate the permanent response
-    yp(t) = y_permanent_HS1(t,sol_j,dict_c,Ts,CbF, M01, M02, M1, M2, M001, F211,  m01m1,
-                            m01m2,m02m1,m02m2)
+    yp(t) = y_permanent_HS0(t,sol_j,dict_c,Ts,CbF, M01, M1, M001, F211,  m01m1)
    
     # Evaluate constants C1 and C2 - Appendix A
     C1, C2 = Evaluate_Cs(t0,F211,FCb,Cb2F,U0,V0)
