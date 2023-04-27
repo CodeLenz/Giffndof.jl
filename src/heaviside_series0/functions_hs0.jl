@@ -73,10 +73,7 @@ function Evaluate_coefs_aH0(interval::Int64,g::Vector{T}, Ts::T1) where {T,T1}
     dt = tL-tl
 
     # Integral of g in the interval. 
-    integral = dt*(gl + 0.5*(gL-gl)) 
-
-    # Coeficient a0
-    a0 = integral/dt
+    a0 = (gl + 0.5*(gL-gl)) 
 
     # Return a0
     return a0
@@ -242,7 +239,7 @@ function Evaluate_gtildeH0(t::Float64, cj0::Vector{Float64}, Ts::T) where T
    np = min(n+1 - sum(mask),n)
 
    # Loop over the valid intervals
-   for interval=1:np
+   for interval=1:n   #p
 
         # Initial time at the interval
         tl = Ts[interval]
