@@ -312,7 +312,7 @@ function y_permanent_HS0!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{I
         count = 1
 
         # Recover coefficients c for this j
-        cj0 = @view dict_c[j]
+        cj0 = dict_c[j]
         
         # Loop over k just for valid intervals in Ts
         for k=1:np
