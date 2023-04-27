@@ -279,7 +279,7 @@ m01m1 = M01*M1
 
 outp         -> output vector (modified in place) 
 """
-function y_permanent_HS0!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
+function y_permanent_HS0!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Vector{Float64}},Ts::T,
                       CbF::AbstractMatrix,
                       M01::AbstractMatrix,  M1::AbstractMatrix,
                       M001::AbstractMatrix,
@@ -378,7 +378,7 @@ m01m1 = M01*M1
 
 outp         -> output vector (modified in place) 
 """
-function y_permanent_HS0(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
+function y_permanent_HS0(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Vector{Float64}},Ts::T,
                       CbF::AbstractMatrix,
                       M01::AbstractMatrix, M1::AbstractMatrix,
                       M001::AbstractMatrix,
