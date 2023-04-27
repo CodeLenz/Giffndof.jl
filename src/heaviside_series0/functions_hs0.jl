@@ -235,7 +235,7 @@ function Evaluate_gtildeH0(t::Float64, cj0::Vector{Float64}, Ts::T) where T
    mask = t .<= Ts
 
    # Thus, the number of intervals to use in the loop is
-   np = min(n+1 - sum(mask),n)
+   np = max(1,min(n+1 - sum(mask),n))
 
    # Loop over the valid intervals
    for interval=1:np
