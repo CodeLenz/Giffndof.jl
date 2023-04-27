@@ -38,7 +38,7 @@ module Giffndof
     # Export some auxiliary functions 
     export Split_sin
     export Solve_newmark
-    export Evaluate_coefs_cH0, Evaluate_gtildeH0
-    export Evaluate_coefs_cH1, Evaluate_gtildeH1
+    export Evaluate_coefs_cH0, Evaluate_ghatH0
+    export Evaluate_coefs_cH1, Evaluate_ghatH1
 
 end #module

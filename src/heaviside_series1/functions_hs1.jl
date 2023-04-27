@@ -238,13 +238,13 @@ end
  the approximation at
  
 """
-function Evaluate_gtildeH1(t::Float64, cj0::Vector{Float64}, cj1::Vector{Float64}, Ts::T) where T
+function Evaluate_ghatH1(t::Float64, cj0::Vector{Float64}, cj1::Vector{Float64}, Ts::T) where T
 
    # Number of intervals in Ts
    n = length(Ts)-1
 
    # Basic test
-   n>1 || error("Evaluate_gtildeh1:: you must inform at least two values in Ts")
+   n>1 || error("Evaluate_ghatH1:: you must inform at least two values in Ts")
 
    # Inicialize the output vector
    saida = 0.0
