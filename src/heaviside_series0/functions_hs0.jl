@@ -102,7 +102,6 @@ function Evaluate_coefs_cH0(g::Function, Ts::T) where T
 
    # Allocate both output vectors
    cj0 = zeros(n)
-   cj1 = zeros(n)
 
    # Intial time
    tl = Ts[1]
@@ -124,7 +123,7 @@ function Evaluate_coefs_cH0(g::Function, Ts::T) where T
 
    end # interval
 
-   # Return coef cj0
+   # Return coefs cj0
    cj0
 
 end
@@ -228,18 +227,18 @@ function Evaluate_gtildeH0(t::Float64, cj0::Vector{Float64}, Ts::T) where T
    # Basic test
    n>1 || error("Evaluate_gtildeH0:: you must inform at least two values in Ts")
 
-   # Inicialize the output vector
+   # Inicialize the output value
    saida = 0.0
 
    # We do not need to evaluate all intervals. Build a logical mask
    # where t is smaller than Ts (0)
-   mask = t .< Ts
+   mask = t .<= Ts
 
    # Thus, the number of intervals to use in the loop is
    np = min(n+1 - sum(mask),n)
 
    # Loop over the valid intervals
-   for interval=1:n   #p
+   for interval=1:np
 
         # Initial time at the interval
         tl = Ts[interval]
