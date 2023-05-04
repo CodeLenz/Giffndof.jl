@@ -197,7 +197,7 @@ end
 """
 function y_homo(t::Float64,expF211_C2::T1, expFCb_C1::T2) where {T1,T2}
 
-    expv(-t,expF211) .+ expv(t,expFCb) 
+    expv(-t,expF211_C2) .+ expv(t,expFCb_C1) 
 
 end
 
