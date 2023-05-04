@@ -7,6 +7,7 @@ module Giffndof
 
     # load packages
     using LinearAlgebra, OrderedCollections, QuadGK
+    using ArnoldiMethod, ExponentialUtilities
 
     # load common functions
     include("common/homo.jl")
