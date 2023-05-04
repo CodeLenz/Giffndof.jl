@@ -68,9 +68,9 @@ function Solve_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstrac
     # and
     #
     # exp(FCb*t)*C1
+    #
     expF211_C2 = arnoldi(F211,C2)
     expFCb_C1  = arnoldi(FCb,C1)
-
 
     # Homogeneous solution at t - Equation 49
     yh(t) = y_homo(t,expF211_C2,expFCb_C1)

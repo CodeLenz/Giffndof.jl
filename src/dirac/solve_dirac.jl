@@ -59,12 +59,14 @@ function Solve_dirac(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatri
     C1, C2 = Evaluate_Cs(t0,F211,FCb,Cb2F,U0,V0)
 
     # Now we can precompute the Arnoldi Factors for 
+    #
     # exp(F211*t)*C2   obs: the negative sign is used in front of t in
     #                       y_homo
     #
     # and
     #
     # exp(FCb*t)*C1
+    #
     expF211_C2 = arnoldi(F211,C2)
     expFCb_C1  = arnoldi(FCb,C1)
 
