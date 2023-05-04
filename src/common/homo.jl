@@ -185,19 +185,19 @@ end
 
  t      -> time
 
- F211   -> Constant matrix
+ expF211   -> Arnoldi decomposition of F211 and C2
 
- FCb    -> Constant matrix = F211 - Cb
+ expFCb    -> Arnoldi decomposition of matrix = F211 - Cb and C1
+
+ where 
 
  C1, C2 -> Constant vectors evaluated by Evaluate_Cs()
 
-
  return (complex valued) vector callable function y_h(t)
 """
-function y_homo(t::Float64,F211::AbstractMatrix{T1}, FCb::AbstractMatrix{T2},
-                C1::Vector{T3}, C2::Vector{T3}) where {T1,T2,T3}
+function y_homo(t::Float64,expF211_C2::T1, expFCb_C1::T2) where {T1,T2}
 
-    exp(-F211*t)*C2 + exp(FCb*t)*C1 
+    expv(-t,expF211) .+ expv(t,expFCb) 
 
 end
 
