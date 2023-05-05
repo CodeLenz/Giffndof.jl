@@ -370,7 +370,7 @@ function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{I
             # T6
             T6A = -(c_jk1*t_jk + c_jk0)*M1
             T6B =  (c_jk1)*M2
-            T6 = exp(F211*t1)*M001*(T6A .+ T6B)
+            T6 = exp(Array(F211)*t1)*M001*(T6A .+ T6B)
 
             # T7
             T7A1 = m01m1*(-c_jk1*t_jk -c_jk0)   
@@ -384,7 +384,7 @@ function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{I
             T7D  = -M001*(T7D1 .+ T7D2)
 
             # Final T7
-            T7 = exp(CbF*t1)*(T7A .+ T7B .+ T7D)
+            T7 = exp(Array(CbF)*t1)*(T7A .+ T7B .+ T7D)
 
             # Add and use the cache
             outp .= outp .+ (T2 .+ T4 .+ T5 .+ T6 .+ T7)*sol_j[:,count]
