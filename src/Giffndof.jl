@@ -7,6 +7,7 @@ module Giffndof
 
     # load packages
     using LinearAlgebra, OrderedCollections, QuadGK
+    using SparseArrays
 
     # load common functions
 
