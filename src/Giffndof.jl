@@ -9,9 +9,10 @@ module Giffndof
     using LinearAlgebra, OrderedCollections, QuadGK
 
     # load common functions
+
+    include("common/aux.jl")
     include("common/homo.jl")
     include("common/step.jl")
-    include("common/aux.jl")
     include("common/newmark.jl")
     include("heaviside/commonh.jl")
 
@@ -37,6 +38,7 @@ module Giffndof
 
     # Export some auxiliary functions 
     export Split_sin
+    export exp, sqrt
     export Solve_newmark
     export Evaluate_coefs_cH0, Evaluate_ghatH0
     export Evaluate_coefs_cH1, Evaluate_ghatH1

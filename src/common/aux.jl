@@ -1,3 +1,18 @@
+
+#
+# Avoid problems with Sparse Matrices in exp(A)
+#
+import LinearAlgebra.exp
+function exp(A::SparseMatrixCSC)
+    exp(Array(A))
+end
+
+import LinearAlgebra.sqrt
+function sqrt(A::SparseMatrixCSC)
+    sqrt(Array(A))
+end
+
+
 #
 # Split  A*sin(wt + p) into two exponentials
 #
