@@ -107,6 +107,9 @@ function y_permanent_dirac!(t::Float64,sol_j::AbstractMatrix{T},
     # Number of columns in the cache
     ncol = size(sol_j,2)
 
+    # We can compute the difference only once
+    difference = (F211 .- CbF)
+
     #
     # Compute Eq. 179
     #
@@ -139,14 +142,11 @@ function y_permanent_dirac!(t::Float64,sol_j::AbstractMatrix{T},
                 # Common term
                 t1 = t_jk - t
 
-                # First matrix
-                M1 = exp(F211*t1)
-
-                # Second matrix
-                M2 = exp(CbF*t1)
+                # Expensive computation
+                M1 = expv(t1, difference, sol_j[:,count])
 
                 # Use the cache and add to the solution
-                outp .= outp .+ c_jk*H_jk*(M1 .- M2)*sol_j[:,count]
+                outp .= outp .+ c_jk*H_jk*M1
 
             end # if H_jk > 0.0
             

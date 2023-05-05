@@ -74,7 +74,7 @@ function y_permanent_heaviside0!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
 
                 # T6
                 T6A = -c_jk0*M1
-                T6  = exp(F211*t1)*M001*(T6A)
+                T6  = exp(Array(F211)*t1)*M001*(T6A)
 
                 # T7
                 #T7A = -T5 #m01m1*(-c_jk0)   <------------------
@@ -83,7 +83,7 @@ function y_permanent_heaviside0!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
                 T7D  = -M001*(T6A)
 
                 # Final T7
-                T7 = exp(CbF*t1)*(T7D.-T5)
+                T7 = exp(Array(CbF)*t1)*(T7D.-T5)
 
                 # Add and use the cache
                 outp .= outp .+ H_jk*(T5 .+ T6 .+ T7)*sol_j[:,count]
