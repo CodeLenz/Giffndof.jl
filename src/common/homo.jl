@@ -164,10 +164,14 @@ function Evaluate_Cs_general(t0::Float64,F211::AbstractMatrix{T1},FCb::AbstractM
     n = length(U0)
 
     # Pre-compute exp(FCb*t0)
-    expFCb = exp(FCb*t0)
+    # Convert to Array since exp in Base does not work 
+    # for Sparse arrays
+    expFCb = exp(Array(FCb)*t0)
 
     # Pre-compute exp(-F211*t0)
-    PC3 = exp(-F211*t0)
+    # Convert to Array since exp in Base does not work 
+    # for Sparse arrays
+    PC3 = exp(Array(-F211)*t0)
 
     # Augmented linear system                 
     A = [  expFCb        PC3 ;
@@ -183,7 +187,7 @@ end
 """
  Evaluate homogeneous response at time t
 
- t      -> time
+ t      -> time or a list of discrete times
 
  F211   -> Constant matrix
 
@@ -194,10 +198,10 @@ end
 
  return (complex valued) vector callable function y_h(t)
 """
-function y_homo(t::Float64,F211::AbstractMatrix{T1}, FCb::AbstractMatrix{T2},
+function y_homo(t,F211::AbstractMatrix{T1}, FCb::AbstractMatrix{T2},
                 C1::Vector{T3}, C2::Vector{T3}) where {T1,T2,T3}
 
-    exp(-F211*t)*C2 + exp(FCb*t)*C1 
+    expv(-t,F211,C2) .+ expv(t,FCb,C1)
 
 end
 
