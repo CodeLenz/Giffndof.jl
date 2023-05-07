@@ -84,15 +84,15 @@ function y_permanent_heaviside1!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
                 T4 = -c_jk1*m02m1
  
                 # T5
-                T5 = -c_jk1*m01m2 + c_jk0*m01m1
+                T5 = -c_jk1*m01m2 .+ c_jk0*m01m1
 
                 # T6
-                T6A = -(c_jk1*t_jk + c_jk0)*M1
+                T6A = -(c_jk1*t_jk .+ c_jk0)*M1
                 T6B =  (c_jk1)*M2
                 T6 = exp(F211*t1)*(M001\( T6A .+ T6B))
 
                 # T7
-                T7A1 = m01m1*(-c_jk1*t_jk -c_jk0)   
+                T7A1 = m01m1*(-c_jk1*t_jk .- c_jk0)   
                 T7A2 = m01m2*(c_jk1) 
                 T7A  = T7A1 .+ T7A2
 
