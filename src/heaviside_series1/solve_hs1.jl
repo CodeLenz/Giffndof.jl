@@ -55,16 +55,26 @@ function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{
     # Pre-evaluate matrices needed to compute the permanente solution
     CbF = Cb .- F211
     FCb = -CbF
-    M01 = CbF^(-1)
-    M02 = CbF^(-2)
-    M1 = F211^(-1)
-    M2 = F211^(-2)
     Cb2F = Cb .- 2*F211
-    M001 = (Cb2F)^(-1)
-    m01m1 = M01*M1
-    m01m2 = M01*M2
-    m02m1 = M02*M1
-    m02m2 = M02*M2
+    
+    # M01 = CbF^(-1)
+    M01 = lu(CbF) 
+
+    # M02 = CbF^(-2)
+    M02 = lu(CbF*CbF) 
+
+    # M1 = F211^(-1)
+    M1 = F211 \ Matrix{eltype(F211)}(I, size(F211)...)
+
+    # M2 = F211^(-2)
+    M2 = M1*M1 
+
+    # M001 = (Cb2F)^(-1)
+    M001 = lu(Cb2F)
+
+    m01m1 = M01\M1
+    m01m2 = M01\M2
+    m02m1 = M02\M1
 
     # Pre-process 
     sol_j = Process_heaviside(M,load_data)
@@ -73,7 +83,7 @@ function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{
     dict_c = Generate_Dict_cH1(load_data,Ts)
 
     # Evaluate the permanent response
-    yp(t) = y_permanent_HS1(t,sol_j,dict_c,Ts,CbF, M01, M02, M1, M2, M001, F211,  m01m1,
+    yp(t) = y_permanent_HS1(t,sol_j,dict_c,Ts,CbF, M1, M2, M001, F211,  m01m1,
                             m01m2,m02m1,m02m2)
    
     # Evaluate constants C1 and C2 - Appendix A

@@ -310,8 +310,8 @@ outp         -> output vector (modified in place)
 """
 function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
                       CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M02::AbstractMatrix,  M1::AbstractMatrix,
-                      M2::AbstractMatrix,   M001::AbstractMatrix,
+                      M1::AbstractMatrix,
+                      M2::AbstractMatrix,   M001,
                       F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix,
                       m02m1::AbstractMatrix, m02m2::AbstractMatrix,
                       outp::Vector{Tp})  where {T,Tp}
@@ -370,7 +370,8 @@ function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{I
             # T6
             T6A = -(c_jk1*t_jk + c_jk0)*M1
             T6B =  (c_jk1)*M2
-            T6 = exp(F211*t1)*M001*(T6A .+ T6B)
+            common = M001\(T6A .+ T6B)
+            T6 = exp(F211*t1)*(common)
 
             # T7
             T7A1 = m01m1*(-c_jk1*t_jk -c_jk0)   
@@ -379,9 +380,9 @@ function y_permanent_HS1!(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{I
 
             T7B =  m02m1*(c_jk1)
            
-            T7D1 = -M1*(c_jk1*t_jk + c_jk0)
-            T7D2 =  M2*(c_jk1)
-            T7D  = -M001*(T7D1 .+ T7D2)
+            #T7D1 = -M1*(c_jk1*t_jk + c_jk0)
+            #T7D2 =  M2*(c_jk1)
+            T7D  = -common #M001\(-T7D1 .- T7D2)
 
             # Final T7
             T7 = exp(CbF*t1)*(T7A .+ T7B .+ T7D)
@@ -435,9 +436,8 @@ m02m2 = M02*M2
 outp         -> output vector (modified in place) 
 """
 function y_permanent_HS1(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{Int64,Matrix{Float64}},Ts::T,
-                      CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M02::AbstractMatrix,  M1::AbstractMatrix,
-                      M2::AbstractMatrix,   M001::AbstractMatrix,
+                      CbF::AbstractMatrix, M1::AbstractMatrix,
+                      M2::AbstractMatrix,   M001,
                       F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix,
                       m02m1::AbstractMatrix, m02m2::AbstractMatrix)  where {T}
 
@@ -450,7 +450,7 @@ function y_permanent_HS1(t::Float64,sol_j::AbstractMatrix,dict_c::OrderedDict{In
     outp = Vector{ComplexF64}(undef,ngls)
 
     # Call the driver
-    y_permanent_HS1!(t,sol_j,dict_c,Ts,CbF,M01,M02,M1,M2,M001,F211,m01m1,m01m2,m02m1,m02m2,outp)
+    y_permanent_HS1!(t,sol_j,dict_c,Ts,CbF,M1,M2,M001,F211,m01m1,m01m2,m02m1,m02m2,outp)
 
     return outp
 
