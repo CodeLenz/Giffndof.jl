@@ -46,10 +46,10 @@ function Solve_heaviside1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     Cb2F = Cb .- 2*F211
 
     # M01 = CbF^(-1)
-    M01 = CbF \ Matrix{eltype(CbF)}(I, size(CbF)...)
+    M01 = lu(CbF) #CbF \ Matrix{eltype(CbF)}(I, size(CbF)...)
 
     # M02 = CbF^(-2)
-    M02 = M01*M01 
+    M02 = lu(Cbf*Cbf) #M01*M01 
 
     # M1 = F211^(-1)
     M1 = F211 \ Matrix{eltype(F211)}(I, size(F211)...)
