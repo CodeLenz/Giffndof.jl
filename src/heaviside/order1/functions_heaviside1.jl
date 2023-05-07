@@ -32,8 +32,8 @@ m02m1 = M02*M1
 outp         -> output vector (modified in place) 
 """
 function y_permanent_heaviside1!(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M1::AbstractMatrix,
-                      M2::AbstractMatrix, M001::AbstractMatrix,
+                      M1::AbstractMatrix,
+                      M2::AbstractMatrix, M001,
                       F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix,
                       m02m1::AbstractMatrix, outp::Vector{Ts})  where Ts
 
@@ -89,7 +89,7 @@ function y_permanent_heaviside1!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
                 # T6
                 T6A = -(c_jk1*t_jk + c_jk0)*M1
                 T6B =  (c_jk1)*M2
-                T6 = exp(F211*t1)*M001*( T6A .+ T6B)
+                T6 = exp(F211*t1)*(M001\( T6A .+ T6B))
 
                 # T7
                 T7A1 = m01m1*(-c_jk1*t_jk -c_jk0)   
@@ -100,7 +100,7 @@ function y_permanent_heaviside1!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
              
                 T7D1 = -M1*(c_jk1*t_jk + c_jk0)
                 T7D2 =  M2*(c_jk1)
-                T7D  = -M001*(T7D1 .+ T7D2)
+                T7D  = -M001\(T7D1 .+ T7D2)
 
                 # Final T7
                 T7 = exp(CbF*t1)*(T7A .+ T7B .+ T7D)
@@ -154,8 +154,8 @@ Output:
 outp         -> output vector
 """
 function y_permanent_heaviside1(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                    M01::AbstractMatrix, M1::AbstractMatrix,
-                    M2::AbstractMatrix, M001::AbstractMatrix,
+                    M1::AbstractMatrix,
+                    M2::AbstractMatrix, M001,
                     F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix, 
                     m02m1::AbstractMatrix)
 
@@ -167,7 +167,7 @@ function y_permanent_heaviside1(t::Float64,sol_j::AbstractMatrix,load_data::Orde
     outp = Vector{ComplexF64}(undef,ngls)
 
     # Call the driver
-    y_permanent_heaviside1!(t,sol_j,load_data,CbF,M01,M1,M2,M001,F211,m01m1,m01m2,
+    y_permanent_heaviside1!(t,sol_j,load_data,CbF,M1,M2,M001,F211,m01m1,m01m2,
                            m02m1,outp)
 
     # return the output

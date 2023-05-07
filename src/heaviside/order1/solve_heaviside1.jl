@@ -45,14 +45,24 @@ function Solve_heaviside1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     # Evaluate Cb2F (Auxiliary matrix to avoid repeated computation)
     Cb2F = Cb .- 2*F211
 
-    M01 = CbF^(-1)
-    M02 = CbF^(-2)
-    M1 = F211^(-1)
-    M2 = F211^(-2)
-    M001 = (Cb2F)^(-1)
-    m01m1 = M01*M1
-    m01m2 = M01*M2
-    m02m1 = M02*M1
+    # M01 = CbF^(-1)
+    M01 = CbF \ Matrix{eltype(CbF)}(I, size(CbF)...)
+
+    # M02 = CbF^(-2)
+    M02 = M01*M01 
+
+    # M1 = F211^(-1)
+    M1 = F211 \ Matrix{eltype(F211)}(I, size(F211)...)
+
+    # M2 = F211^(-2)
+    M2 = M1*M1 
+
+    # M001 = (Cb2F)^(-1)
+    M001 = lu(Cb2F)
+
+    m01m1 = M01\M1
+    m01m2 = M01\M2
+    m02m1 = M02\M1
     
     # Pre-process 
     sol_j = Process_heaviside(M,load_data)
@@ -67,7 +77,7 @@ function Solve_heaviside1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     yh(t) = y_homo(t,F211,FCb,C1,C2)
 
     # Permanent solution for a given time
-    yp(t) = y_permanent_heaviside1(t,sol_j,load_data,CbF, M01, M1, M2, M001, F211, m01m1,
+    yp(t) = y_permanent_heaviside1(t,sol_j,load_data,CbF, M1, M2, M001, F211, m01m1,
                                   m01m2,m02m1)
     
     # Complete response
