@@ -44,8 +44,8 @@ m03m1 = M03*M1
 outp         -> output vector (modified in place) 
 """
 function y_permanent_heaviside2!(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M02::AbstractMatrix, M03::AbstractMatrix, M1::AbstractMatrix,
-                      M2::AbstractMatrix, M3::AbstractMatrix,  M001::AbstractMatrix,
+                      M1::AbstractMatrix,
+                      M2::AbstractMatrix, M3::AbstractMatrix,  M001,
                       F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix, m01m3::AbstractMatrix,
                       m02m1::AbstractMatrix, m02m2::AbstractMatrix, m03m1::AbstractMatrix,
                       outp::Vector{Ts})  where Ts
@@ -95,45 +95,45 @@ function y_permanent_heaviside2!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
                 T1 = (c_jk2*t^2)*m01m1
 
                 # T2
-                T2 = t*(c_jk1*m01m1 -2*c_jk2*m01m2 -2*c_jk2*m02m1) 
+                T2 = t*(c_jk1*m01m1 .- 2*c_jk2*m01m2 .- 2*c_jk2*m02m1) 
 
                 # T3 
                 T3 = 2*c_jk2*m03m1
 
                 # T4
-                T4 = -c_jk1*m02m1 + 2*c_jk2*m02m2 
+                T4 = -c_jk1*m02m1 .+ 2*c_jk2*m02m2 
  
                 # T5
-                T5 = 2*c_jk2*m01m3 - c_jk1*m01m2 + c_jk0*m01m1
+                T5 = 2*c_jk2*m01m3 .- c_jk1*m01m2 .+ c_jk0*m01m1
 
                 # T6
-                T6A = -( c_jk2*t_jk^2 + c_jk1*t_jk + c_jk0  )*M1
-                T6B =  (2*c_jk2*t_jk + c_jk1 )*M2
+                T6A = -( c_jk2*t_jk^2 .+ c_jk1*t_jk .+ c_jk0  )*M1
+                T6B =  (2*c_jk2*t_jk .+ c_jk1 )*M2
                 T6C =  -2*c_jk2*M3
-                T6 = exp(F211*t1)*M001*( T6A + T6B + T6C)
+                T6 = exp(F211*t1)*(M001\( T6A .+ T6B .+ T6C))
 
                 # T7
                 T7A1 = m01m1*(-c_jk2*t_jk^2  -c_jk1*t_jk -c_jk0)   
                 T7A2 = m01m2*(2*c_jk2*t_jk + c_jk1) 
                 T7A3 = m01m3*(-2*c_jk2)
-                T7A  = T7A1 + T7A2 + T7A3
+                T7A  = T7A1 .+ T7A2 .+ T7A3
 
                 T7B1 =  m02m1*(2*c_jk2*t_jk + c_jk1)
                 T7B2 =  m02m2*(-2*c_jk2)
-                T7B  =  T7B1 + T7B2
+                T7B  =  T7B1 .+ T7B2
 
                 T7C = -T3 #-2*c_jk2*m03m1
 
                 T7D1 = -M1*(c_jk2*t_jk^2 + c_jk1*t_jk + c_jk0)
                 T7D2 =  M2*(2*c_jk2*t_jk + c_jk1)
                 T7D3 = T6C #-2*c_jk2*M3
-                T7D  = -M001*(T7D1 + T7D2 + T7D3)
+                T7D  = M001\-(T7D1 .+ T7D2 .+ T7D3)
 
                 # Final T7
-                T7 = exp(CbF*t1)*(T7A + T7B + T7C + T7D)
+                T7 = exp(CbF*t1)*(T7A .+ T7B .+ T7C .+ T7D)
 
                 # Add and use the cache
-                outp .= outp .+ H_jk*( T1 + T2 + T3 + T4 + T5 + T6 + T7)*sol_j[:,count]
+                outp .= outp .+ H_jk*( T1 .+ T2 .+ T3 .+ T4 .+ T5 .+ T6 .+ T7)*sol_j[:,count]
 
             end # if H_jk > 0.0
             
@@ -192,8 +192,8 @@ Output:
 outp         -> output vector
 """
 function y_permanent_heaviside2(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                    M01::AbstractMatrix, M02::AbstractMatrix, M03::AbstractMatrix, M1::AbstractMatrix,
-                    M2::AbstractMatrix, M3::AbstractMatrix,  M001::AbstractMatrix,
+                    M1::AbstractMatrix,
+                    M2::AbstractMatrix, M3::AbstractMatrix,  M001,
                     F211::AbstractMatrix, m01m1::AbstractMatrix, m01m2::AbstractMatrix, m01m3::AbstractMatrix,
                     m02m1::AbstractMatrix, m02m2::AbstractMatrix, m03m1::AbstractMatrix)
 
@@ -205,7 +205,7 @@ function y_permanent_heaviside2(t::Float64,sol_j::AbstractMatrix,load_data::Orde
     outp = Vector{ComplexF64}(undef,ngls)
 
     # Call the driver
-    y_permanent_heaviside2!(t,sol_j,load_data,CbF,M01,M02,M03,M1,M2,M3,M001,F211,m01m1,m01m2,m01m3,
+    y_permanent_heaviside2!(t,sol_j,load_data,CbF,M1,M2,M3,M001,F211,m01m1,m01m2,m01m3,
                            m02m1,m02m2,m03m1,outp)
 
     # return the output
