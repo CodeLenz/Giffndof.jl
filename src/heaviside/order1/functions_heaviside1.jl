@@ -100,7 +100,7 @@ function y_permanent_heaviside1!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
              
                 T7D1 = -M1*(c_jk1*t_jk + c_jk0)
                 T7D2 =  M2*(c_jk1)
-                T7D  = -M001\(T7D1 .+ T7D2)
+                T7D  = M001\(-T7D1 .- T7D2)
 
                 # Final T7
                 T7 = exp(CbF*t1)*(T7A .+ T7B .+ T7D)
