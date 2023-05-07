@@ -75,6 +75,7 @@ function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{
     m01m1 = M01\M1
     m01m2 = M01\M2
     m02m1 = M02\M1
+    m02m2 = M02\M2
 
     # Pre-process 
     sol_j = Process_heaviside(M,load_data)
