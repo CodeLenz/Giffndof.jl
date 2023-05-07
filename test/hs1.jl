@@ -32,6 +32,9 @@
         # Pass function g(t) to the dictionary
         load_data[2] = g
 
+        # Create Ts by using tspan and dt
+        Ts = tspan[1]:dt:tspan[2]
+
         #  Main function -> solve the problem
         y, yh, yp = Solve_HS1(M,C,K,U0,V0,Ts,load_data,t0=t0)
     
