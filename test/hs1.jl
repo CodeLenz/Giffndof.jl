@@ -5,7 +5,7 @@
 
     # Data
     tspan  = (0.0,5.0)
-    dt = 1E-4
+    dt = 1E-3
     beta_c = 1E-3
     rtol = 1E-2
 
