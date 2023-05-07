@@ -26,7 +26,7 @@ m01m1 = M01*M1
 outp         -> output vector (modified in place) 
 """
 function y_permanent_heaviside0!(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                      M01::AbstractMatrix, M1::AbstractMatrix,  M001::AbstractMatrix,
+                      M1::AbstractMatrix,  M001,
                       F211::AbstractMatrix, m01m1::AbstractMatrix, 
                       outp::Vector{Ts})  where Ts
 
@@ -74,13 +74,14 @@ function y_permanent_heaviside0!(t::Float64,sol_j::AbstractMatrix,load_data::Ord
 
                 # T6
                 T6A = -c_jk0*M1
-                T6  = exp(F211*t1)*M001*(T6A)
+                CT = M001\T6A
+                T6  = exp(F211*t1)*CT
 
                 # T7
                 #T7A = -T5 #m01m1*(-c_jk0)   <------------------
                 
                 #T7D1 = T6A #-M1*(c_jk0)  <----------
-                T7D  = -M001*(T6A)
+                T7D  = -CT
 
                 # Final T7
                 T7 = exp(CbF*t1)*(T7D.-T5)
@@ -128,8 +129,8 @@ Output:
 outp         -> output vector
 """
 function y_permanent_heaviside0(t::Float64,sol_j::AbstractMatrix,load_data::OrderedDict,CbF::AbstractMatrix,
-                    M01::AbstractMatrix, M1::AbstractMatrix,
-                    M001::AbstractMatrix, F211::AbstractMatrix, m01m1::AbstractMatrix)
+                    M1::AbstractMatrix,
+                    M001, F211::AbstractMatrix, m01m1::AbstractMatrix)
 
 
     # Number of DOFs
@@ -139,7 +140,7 @@ function y_permanent_heaviside0(t::Float64,sol_j::AbstractMatrix,load_data::Orde
     outp = Vector{ComplexF64}(undef,ngls)
 
     # Call the driver
-    y_permanent_heaviside0!(t,sol_j,load_data,CbF,M01,M1,M001,F211,m01m1,outp)
+    y_permanent_heaviside0!(t,sol_j,load_data,CbF,M1,M001,F211,m01m1,outp)
 
     # return the output
     return outp
