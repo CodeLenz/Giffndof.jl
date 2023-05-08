@@ -49,7 +49,7 @@ function Solve_heaviside0(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     M01 = lu(CbF)
 
     # M1 = F211^(-1)
-    M1 = F211 \ Matrix{eltype(F211)}(I, size(F211)...)
+    M1 = Array(F211)^(-1) #\ Matrix{eltype(F211)}(I, size(F211)...)
     
     # M001 = (Cb2F)^(-1)
     M001 = lu(Cb2F)
