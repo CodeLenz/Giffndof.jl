@@ -38,7 +38,7 @@ function Solve_dirac(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatri
     @assert t0==0 "Solve_dirac:: t0 must be 0.0 by now"
 
     # Evaluate F211 - Equation 65
-    chol = cholesky(M)
+    chol = cholesky(Symmetric(M))
     Kb = chol\K
     Cb = chol\C
     F211 = 0.5*Cb + 0.5*sqrt(Cb^2 - 4*Kb)
