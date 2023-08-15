@@ -47,7 +47,7 @@ function Solve_HS1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{
 
 
     # Evaluate F211 
-    chol = cholesky(M)
+    chol = cholesky(Symmetric(M))
     Kb = chol\K
     Cb = chol\C
     F211 = 0.5*Cb + 0.5*sqrt(Cb^2 - 4*Kb)
