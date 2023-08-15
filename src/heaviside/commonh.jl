@@ -35,7 +35,7 @@ function Process_heaviside(M::AbstractMatrix{T},
     ######################################################################
 
     # Cholesky decomposition
-    chol = cholesky(M)
+    chol = cholesky(Symmetric(M))
 
     # Number of cached solutions
     ncol = length(load_data)
