@@ -106,10 +106,10 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
             c_jk = data[3*(k-1)+1]
 
             # Angular frequency
-            w_jk = data[3*(k-1)+2]
+            w_jk = real(data[3*(k-1)+2])
 
             # Phase
-            phi_jk = data[3*(k-1)+3]
+            phi_jk = real(data[3*(k-1)+3])
 
             # Build KD_jk
             KD_jk = K + im*w_jk*C - M*(w_jk)^2 
