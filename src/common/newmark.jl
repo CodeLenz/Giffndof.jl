@@ -2,7 +2,7 @@
 Solve the transient problem M(x)A(x,t) + C(x)V(x,t) + K(x,t)U(x,t) = F(t), 
 using Newmark-beta method. 
 
-    Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!::Function, gls::Matrix{Int64}, 
+    Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!::Function, 
                   ts::Tuple{Float64, Float64}, Δt::Float64,
                   verbose=false;
                   U0=Float64[], V0=Float64[],
@@ -62,6 +62,7 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
 
     # Newmark operator
     MN = M .+ β*K*Δt^2 .+ γ*C*Δt
+    luMN = lu(Symmetric(MN))
 
     # Check initial conditons
     if isempty(U0)
@@ -78,12 +79,16 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
         length(V0)==nfull || throw("Newmark::V0 should be $nfull")
     end
 
+    # Local copies of U0 and V0 to avoid overwriting
+    U0c = copy(U0)
+    V0c = copy(V0)
+    
     # Force vector
     F = zeros(nfull)
 
     # Initial acceleration
     f!(0.0,F)
-    A0 = M\(F- K*U0 -C*V0)
+    A0 = M\(F- K*U0c -C*V0c)
 
     # Arrays to monitor the solution. The number of time points is 
     # tspan / dt + 1.
@@ -95,8 +100,8 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
 
     # Store initial values (time zero)
     A_t[1]    = t0
-    A_U[:,1] .= U0[:]
-    A_V[:,1] .= V0[:]
+    A_U[:,1] .= U0c[:]
+    A_V[:,1] .= V0c[:]
     A_A[:,1] .= A0[:]
 
     # Main loop
@@ -104,10 +109,10 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     for t in tspan
 
             f!(t+Δt,F)
-            b = F .- K*U0 .-(C .+Δt*K)*V0 .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
-            A = MN\b
-            V = V0 .+ Δt*( (1-γ)*A0 .+ γ*A )
-            U = U0 .+ Δt*V0 .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
+            b = F .- K*U0c .-(C .+Δt*K)*V0c .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
+            A = luMN\b
+            V = V0c .+ Δt*( (1-γ)*A0 .+ γ*A )
+            U = U0c .+ Δt*V0c .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
             
            # Store values at t+Δt
             A_t[count]    = t + Δt
@@ -116,8 +121,8 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
             A_A[:,count] .= A[:]
             count += 1
 
-            U0 .= U
-            V0 .= V
+            U0c .= U
+            V0c .= V
             A0 .= A
     end
 
