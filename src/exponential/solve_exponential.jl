@@ -60,8 +60,6 @@ function Solve_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstrac
 
     # Evaluate constants C1 and C2 - Appendix A
     C1, C2 = Evaluate_Cs(t0,F211,FCb,Cb2F,U0,V0,yp,dyp)
-
-@show C1, C2
    
     # Homogeneous solution at t - Equation 49
     yh(t) = y_homo(t,F211,FCb,C1,C2)
