@@ -142,7 +142,7 @@ function Example_exponential(t0=0.0)
 
     # Split the ampl*sin(ws t) into two exponentials
 
-    # with apmplitudes
+    # with amplitudes
     c_21 =  ampl*im/2
     c_22 = -ampl*im/2
 
