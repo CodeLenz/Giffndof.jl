@@ -11,7 +11,7 @@ module Giffndof
 
     # load common functions
 
-    include("common/aux.jl")
+    include("common/auxiliar.jl")
     include("common/homo.jl")
     include("common/step.jl")
     include("common/newmark.jl")
