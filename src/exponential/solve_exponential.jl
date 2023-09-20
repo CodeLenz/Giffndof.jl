@@ -13,14 +13,13 @@ include("functions_exponential.jl")
 
    V(t0) = V0
 
-   for exponential excitations  ``f_j = c_jk exp (im w_jk t + im phi_jk)``.  
+   for exponential excitation  ``f_j = c_jk exp (beta_jk t + cphi_jk)``.  
 
    Loading is informed by using a dictionary  ``load_data = Dict{Int64,Vector{ComplexF64}}()``
 
-   ``load_data[j] = [c_j1; w_j1; phi_j1; ....; c_jnk; w_jnk; phi_jnk]``
+   ``load_data[j] = [c_j1; beta_j1; cphi_j1; ....; c_jnk; beta_jnk; cphi_jnk]``
 
-   were nk is the number of exponentials used to represent the 
-   loading at DOF j.
+   were nk is the number of exponentials used to represent the loading at DOF j.
    
    The output are three functions of t
 

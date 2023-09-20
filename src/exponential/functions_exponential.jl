@@ -13,10 +13,10 @@
 
  and f(t) is n x 1 with excitations in the form
 
-  f_j(t) = sum_k  c_jk exp( beta_jk t + im*phi_jk)
+  f_j(t) = sum_k  c_jk exp( beta_jk t + cphi_jk)
 
  where j is the DOF, c_jk is a complex amplitude, 
- beta_jk = omega_jk * i is a complex angular frequency and phi_jk the phase.
+ beta_jk = omega_jk * i is a complex angular frequency and cphi_jk the phase.
 
  Loading information is given by using a dictionary:
 
@@ -32,11 +32,11 @@
    ``c_jk*(KD_jk \\ e_j) -> sol_jk`` 
 
  
- ``im*w_jk -> beta_jk`` 
+ if the excitation is sine or cosine in the exponential form ``im*w_jk -> beta_jk`` 
 
  and
 
- ``im*phi_jk -> cphi_jk`` 
+ if the excitation is sine or cosine in the exponential form ``im*phi_jk -> cphi_jk`` 
 
 
  Inputs:
@@ -59,13 +59,12 @@
 
 
 """
-function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
-                     K::AbstractMatrix{T}, 
-                     load_data::Dict{Int64,Vector{ComplexF64}}) where T
+
+function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::AbstractMatrix{T},load_data::Dict{Int64,Vector{ComplexF64}}) where T
 
 
     # Basic assertions
-    @assert all(size(M).==size(C).==size(K)) "Process_exponential:: Coeficient matrices do not have the same size"
+    @assert all(size(M).==size(C).==size(K)) "Process_exponential:: Coefficient matrices do not have the same size"
     @assert !isempty(load_data) "Process_exponential:: There is no loading data"
 
     # Number of DOFs
@@ -105,29 +104,23 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},
             # Amplitude
             c_jk = data[3*(k-1)+1]
 
-            # Angular frequency
-            w_jk = real(data[3*(k-1)+2])
+            # beta coefficient
+            beta_jk[cont] = data[3*(k-1)+2]
 
             # Phase
-            phi_jk = real(data[3*(k-1)+3])
+            pcphi_jk[cont] = data[3*(k-1)+3]
 
             # Build KD_jk
-            KD_jk = K + im*w_jk*C - M*(w_jk)^2 
+            KD_jk = K + (beta_jk[cont]*C) + (M*(beta_jk[cont]^2)) 
 
             # Solve for  K_jk\e_j and multiply by c_jk
             sol_jk[:,cont] .= c_jk*(KD_jk\e_j)
-           
-            # Store im*w_jk
-            beta_jk[cont] = im*w_jk 
-
-            # Store im*phi_jk
-            cphi_jk[cont] = im*phi_jk 
 
             # Increment the counter
             cont += 1
 
         end #k
-        
+
         # Unset e_j 
         e_j[j] = 0.0
 
@@ -157,7 +150,7 @@ outp         -> output vector (modified in place)
 function y_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T},cphi_jk::Vector{T},
                                   outp::Vector{T}) where T
 
-    # Number of informations stored in the caches
+    # Number of information stored in the caches
     ncol = size(sol_jk,2)
 
     # Set the output to zero
@@ -224,7 +217,7 @@ otp         -> output vector (modified in place)
 function dy_permanent_exponential!(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T}, 
                                   cphi_jk::Vector{T},outp::Vector{T}) where T
 
-    # Number of informations stored in the caches
+    # Number of information stored in the caches
     ncol = size(sol_jk,2)
 
     # Make sure outp is zero
@@ -254,8 +247,7 @@ Output
 
 otp         -> output vector
 """
-function dy_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T},
-                                  cphi_jk::Vector{T}) where T
+function dy_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::Vector{T},cphi_jk::Vector{T}) where T
 
     # Number of informations stored in the caches
     ngls = size(sol_jk,1)
@@ -270,4 +262,3 @@ function dy_permanent_exponential(t::Float64,sol_jk::AbstractMatrix{T},beta_jk::
     return outp
 
 end
-
