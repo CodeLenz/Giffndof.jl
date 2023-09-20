@@ -31,6 +31,7 @@ module Giffndof
     include("discrete/particular/dirac.jl")
     include("discrete/structs.jl")
     include("discrete/process.jl")
+    include("discrete/solver.jl")
 
     # Export the methods - Solvers
     export Solve_exponential
