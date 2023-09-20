@@ -108,7 +108,7 @@ function Process_exponential(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstr
             beta_jk[cont] = data[3*(k-1)+2]
 
             # Phase
-            pcphi_jk[cont] = data[3*(k-1)+3]
+            cphi_jk[cont] = data[3*(k-1)+3]
 
             # Build KD_jk
             KD_jk = K + (beta_jk[cont]*C) + (M*(beta_jk[cont]^2)) 
