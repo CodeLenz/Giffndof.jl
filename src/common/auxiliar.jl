@@ -14,8 +14,11 @@ end
 
 
 #
-# Split  A*sin(wt + p) into two exponentials
+# Split  A*sin( f t + d)
 #
+# where f is in Hz and d in degrees
+#
+# into two exponentials
 #
 # A*i/2 * exp (-i(w + p)) 
 #
@@ -23,20 +26,21 @@ end
 #
 # -A*i/2 * exp (+i(w + p))
 #
+# where w is in rad/s and p in rad
 #
-function Split_sin(A,w,p)
+function Split_sin(A,f,p)
 
     # Complex amplitudes
     c_j1 =  im*A/2
     c_j2 = -im*A/2
 
     # Frequencies
-    w_j1 = -w*1im
-    w_j2 =  w*1im
+    w_j1 = -2*pi*f*1im
+    w_j2 =  2*pi*f*1im
 
     # Phases
-    p_j1 = -p*1im
-    p_j2 =  p*1im
+    p_j1 = -(p*(pi/180))*1im
+    p_j2 =  (p*(pi/180))*1im
 
     # Return in the same sequence used in exponential
     [c_j1; w_j1; p_j1; c_j2; w_j2; p_j2]
@@ -44,8 +48,11 @@ function Split_sin(A,w,p)
 end
 
 #
-# Split  A*cos(wt + p) into two exponentials
+# Split  A*cos( f t + d)
 #
+# where f is in Hz and d in degrees
+#
+# into two exponentials
 #
 # A*i/2 * exp (i(w + p)) 
 #
@@ -53,20 +60,21 @@ end
 #
 # A*i/2 * exp (-i(w + p))
 #
+# where w is in rad/s and p in rad
 #
-function Split_cos(A,w,p)
+function Split_cos(A,f,p)
 
     # Complex amplitudes
-    c_j1 = A/2
+    c_j1 =  A/2
     c_j2 = A/2
 
     # Frequencies
-    w_j1 = w*1im
-    w_j2 =  -w*1im
+    w_j1 = 2*pi*f*1im
+    w_j2 =  -2*pi*f*1im
 
     # Phases
-    p_j1 = p*1im
-    p_j2 =  -p*1im
+    p_j1 = (p*(pi/180))*1im
+    p_j2 =  -(p*(pi/180))*1im
 
     # Return in the same sequence used in exponential
     [c_j1; w_j1; p_j1; c_j2; w_j2; p_j2]
