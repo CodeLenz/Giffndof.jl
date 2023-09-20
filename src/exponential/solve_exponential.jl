@@ -3,7 +3,7 @@
 include("functions_exponential.jl")
 
 """
-   Solve the sytem of second order ODEs 
+   Solve the system of second order ODEs 
 
    ``M A(t) + C V(t) + K U(t) = F(t)``
 
