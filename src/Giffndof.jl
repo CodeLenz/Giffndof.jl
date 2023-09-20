@@ -43,7 +43,7 @@ module Giffndof
     export Solve_discrete
     
     # Export some auxiliary functions 
-    export Split_sin
+    export Split_sin, Split_cos
     export exp, sqrt
     export Solve_newmark
 
