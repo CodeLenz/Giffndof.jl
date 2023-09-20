@@ -1,12 +1,3 @@
-using LinearAlgebra
-
-include("initial_conditions.jl")
-include("particular/exponential.jl")
-include("particular/polynomial.jl")
-include("particular/dirac.jl")
-include("structs.jl")
-include("process.jl")
-
 #
 #
 #
