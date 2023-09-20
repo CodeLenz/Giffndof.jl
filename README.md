@@ -1,9 +1,7 @@
 # Giffndof
 ![logo](Logo-Giff.png)
 
- 
 [![Build Status](https://github.com/CodeLenz/Giffndof.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/CodeLenz/Giffndof.jl/actions/workflows/CI.yml?query=branch%3Amain)
-
 
 # Generalized Integrating Factor for NDOFs
 
@@ -21,7 +19,7 @@ and
  $V(t_0) = V0$
 
 where $t$ is the independent variable, $Y(t)$ a $n \times 1$ vector (dependent variables), $V$ its first   derivative with respect to $t$ and $A$ its second derivative. Matrices  $M$, $C$ and $K$ are $n \times n$. Vector $F(t)$ is informed by using a dictionary.
- 
+
 As this package is not yet registered, you must install it by using
 
 ```julia
@@ -29,14 +27,12 @@ using Pkg
 Pkg.add("https://github.com/CodeLenz/Giffndof.jl.git")
 ```
 
-The OrderedDict data type of package OrderedCollections is needed to use this package. It can also be installed by using 
+The OrderedDict data type of package OrderedCollections is needed to use this package. It can also be installed by using
 
 ```julia
 using Pkg
 Pkg.add("OrderedCollections")
 ```
-
-***Disclaimer: This is a first version of this package and many of the optimizations discussed in the manuscript are not yet implemented***
 
 The following methods are exported, depending on the type of excitation:
 
@@ -64,7 +60,7 @@ y, yh, yp = Solve_heaviside1(M,C,K,U0,V0,load_data,t0=t0)
 y, yh, yp = Solve_heaviside2(M,C,K,U0,V0,load_data,t0=t0)
 ```
 
-where $y$ is the complete solution, $y_h$ the homogeneous solution and $y_p$ the permanent solution. Those solutions are functions and can be evaluated by simply passing a given time 
+where $y$ is the complete solution, $y_h$ the homogeneous solution and $y_p$ the permanent solution. Those solutions are functions and can be evaluated by simply passing a given time
 
 ```julia
 y(0.1) 
@@ -72,8 +68,15 @@ y(0.1)
 
 for example.
 
+A very efficient version is provided to compute the complete solution at a set of discrete times
 
-There is a specific way of informing non null entries in $F(t)$ for each type of excitation. Examples to each one of the solution methods are provided in the following. Scripts to generate the plots of each example are avaliable in directory [examples](examples/) of this repository. A basic subroutine to compute the complete solution by using the Newmark-beta method is provided
+```julia
+response = Solve_discrete(M,C,K,times,load_data,U0,V0)
+```
+
+where ```load_data::Dict{Int64, Matrix{Union{String,Float64}}}``` will be explained in the examples.
+
+There is a specific way of informing non null entries in $F(t)$ for each type of excitation. Examples to each one of the solution methods are provided in the following. Scripts to generate the plots of each example are avaliable in directory [examples](examples/) of this repository. A basic subroutine to compute the complete solution by using the Newmark-beta method is also provided
 
 ```julia
 A,V,U,T = Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!::Function, 
@@ -85,7 +88,7 @@ where $\mathbf{A}$, $\mathbf{V}$ and $\mathbf{U}$ are $n \times n_t$ matrices an
 # Exponentials
 <details>
 
-For forces described as a series of exponentials 
+For forces described as a series of exponentials
 
  $f_j(t) = \sum_{k=1}^{n_k} c_{jk} \exp(i \omega_{jk} t + i \phi_{jk})$
 
@@ -99,17 +102,17 @@ Lets consider the first example in the reference manuscript
 
 ## Example
 
-Consider a $3$ DOFs problem subjected to a force 
+Consider a $3$ DOFs problem subjected to a force
 
  $f_2(t) = 3 \sin(4t) = 3\frac{i}{2}(\exp(-4it) - \exp(4it))$
 
-such that the (complex) amplitudes are $c_{21}=3i/2$ and $c_{22}=-3i/2$, the angular frequencies are $\omega_{21}=-4$ and $\omega_{22}=4$ and the phases are $\phi_{21}=0$ and $\phi_{22}=0$. Thus,
+such that the (complex) amplitudes are $c_{21}=3i/2$ and $c_{22}=-3i/2$, the (complex) angular frequencies are $\omega_{21}=-4i$ and $\omega_{22}=4i$ and the (complex) phases are $\phi_{21}=0$ and $\phi_{22}=0$. Thus,
 
 ```julia
-load_data[2] = [3*im/2; -4.0; 0.0 ; -3*im/2; 4.0; 0.0]
+load_data[2] = [3*im/2; -4.0*im; 0.0*im ; -3*im/2; 4.0*im; 0.0*im]
 ```
 
-The complete example is 
+The complete example is
 
 ```julia
 using Giffndof
@@ -132,7 +135,7 @@ function Example_exponential(t0=0.0)
     U0  = [0.0; 0.0; 0.0]
     V0  = [0.0; 0.0; 0.0]
 
-    #----------------------------- g_2(t) = 3*sin( 4 t) -----------------------------#
+    #----------------------------- g_2(t) = 3*sin(4 t) -----------------------------#
 
     # Amplitude
     ampl = 3.0
@@ -142,17 +145,17 @@ function Example_exponential(t0=0.0)
 
     # Split the ampl*sin(ws t) into two exponentials
 
-    # with amplitudes
+    # with complex amplitudes
     c_21 =  ampl*im/2
     c_22 = -ampl*im/2
 
-    #  angular frequencies
-    w_21 = -ws
-    w_22 =  ws
+    # complex angular frequencies
+    w_21 = -ws*im
+    w_22 =  ws*im
 
-    # and phases
-    p_21 = 0.0
-    p_22 = 0.0
+    # and complex phases
+    p_21 = 0.0*im
+    p_22 = 0.0*im
 
     # Create a dictionary. Each key corresponds to the DOF (j)
     # such that
@@ -567,9 +570,7 @@ end
 ```
 </details>
 
-
 <p>&nbsp;</p>
-
 
 # Second order polynomials multiplied by Heavisides
 <details>
@@ -590,9 +591,7 @@ Consider a $3$ DOFs problem subjected a "bump" between $t=1$ and $t=3$ s and zer
 
  $f_2(t) = (-30 + 40t - 10t^2)H(t-1) + (30 - 40t + 10t^2)H(t-3)$
 
-
 ![quadratic](docs/images/quadratic.png)
-
 
 such that $c_{200}=-30$, $c_{201}=40$, $c_{202}=-10$, $t_{20}=1$, $c_{210}=30$, $c_{211}=-40$, $c_{212}=10$, $t_{21}=3$
 
@@ -663,3 +662,26 @@ end
 ```
 </details>
 
+
+<p>&nbsp;</p>
+
+# Efficient Discrete solution
+<details>
+
+A special method is provided if the user just wants the response $\mathbf{y}$ at a discrete set of times. The user can specify different types of loading at the same time using a dictionary and mix exponentials, polynomials and Dirac's deltas at the same time. There are substancial differences when compared to the previous methods.
+
+The load dictionary is given by 
+
+```julia
+    load_data::Dict{Int64, Matrix{Union{String,Float64}}}
+```
+where the Int64 is the loaded DOF (key), and the string can be "sin", "cos", "dirac" or "polynomial".
+
+The entries in the matrix depend on the type of excitation:
+
+For "sin" and "cos" the entries are ```A f d``` where $A$ is an amplitude, $f$ is a frequency in Hz and $d$ is a phase in degrees. 
+
+For "dirac" the entries are ```[A t 0]``` where $A$ is an amplitude and $t$ is the activation time. The last position is not used.
+
+For "polynomial" the entries are ```[c t1]```
+</details>
