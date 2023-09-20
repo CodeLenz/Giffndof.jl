@@ -19,8 +19,6 @@
 
    Loading is informed by using a dictionary  ``load_data::Dict{Int64, Matrix{Union{String,Float64}}}``
 
-   ``load_data[j] = [c_j1; w_j1; phi_j1; ....; c_jnk; w_jnk; phi_jnk]``
-
    The output is an n x nt matrix where the rows are the DOFs and the columns the values
    for each discrete time.
 
