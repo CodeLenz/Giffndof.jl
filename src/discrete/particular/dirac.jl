@@ -108,7 +108,7 @@ function dirac_particularResponse(times, n_times, data, response,tol_complex=1E-
    
                    # Tests if the current delta was turned on already
                    # If the Dirac impulse was before the current time point
-                   if t_jk<time_points[i]
+                   if t_jk<times[i]
    
                        # As the impulse was out of any time point, its ex-
                        # ponential is already live, thus, this exponential
