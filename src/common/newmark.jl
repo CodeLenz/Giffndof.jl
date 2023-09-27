@@ -189,6 +189,10 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     # Number of time steps
     nt = length(times)
 
+    # Remove the last entry
+    resize!(times,nt-1)
+    nt = nt - 1
+
     # Problem's size
     nfull = size(M,1)
 
