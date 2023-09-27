@@ -173,7 +173,7 @@ Return three arrays of size n x nt, where  nt is the number of time steps (lengt
 
 """
 function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!::Function, 
-                      times;
+                      times_;
                       U0=Float64[], V0=Float64[], β=1/4, γ=1/2)
 
 
@@ -182,16 +182,15 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     #             
 
     # Tspan    
-    t0 = times[1]
-    tf = times[end]
-    Δt = times[2]-times[1]
+    t0 = times_[1]
+    tf = times_[end]
+    Δt = times_[2]-times_[1]
+
+    # Remove the last entry
+    times = times_[1:end-1]
 
     # Number of time steps
     nt = length(times)
-
-    # Remove the last entry
-    resize!(times,nt-1)
-    nt = nt - 1
 
     # Problem's size
     nfull = size(M,1)
