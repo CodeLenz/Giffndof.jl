@@ -715,11 +715,11 @@ function Example_exponential()
  end   
 ```
 
-For "polynomial" the entries are ```[c_k t_k k]``` where $k=0$ for the constant term, $k=1$ for the linear term and so on. 
+For "polynomial" the entries are ```[c_k t_k k]``` where $k=0$ for the constant term, $k=1$ for the linear term and so on.
 
 ```julia
 using Giffndof
-function Example_exponential()
+function Example_polynomial()
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -755,7 +755,7 @@ For "dirac" the entries are ```[A t 0]``` where $A$ is an amplitude and $t$ is t
 
 ```julia
 using Giffndof
-function Example_exponential()
+function Example_dirac()
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
@@ -791,7 +791,7 @@ On is not constrained to impose a single type of excitation when using the discr
 
 ```julia
 using Giffndof
-function Example_exponential()
+function Example_general()
 
     # Mass matrix
     M = [2.0 0.0 0.0 ;
