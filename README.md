@@ -709,8 +709,11 @@ function Example_exponential()
     # Apply a 3sin(4t) at the second dof    
     load_data[2] = ["sine" 3.0 (4.0/(2*pi)) 0.0]
 
+    # Discrete times
+    times = collect(range(start=0.0, stop=10.0, length=1000))
+
     # Evaluates the response using the Giffndof for discrete times
-    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
+    response = real.(Solve_discrete(M, C, K, times, load_data, U0, V0))
     
  end   
 ```
@@ -745,8 +748,11 @@ function Example_polynomial()
     load_data[2] = ["polynomial" 10.0 0.0 1.0;  
                     "polynomial" -1.0 0.0 2.0]
 
+    # Discrete times
+    times = collect(range(start=0.0, stop=10.0, length=1000))
+
     # Evaluates the response using the Giffndof for discrete times
-    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
+    response = real.(Solve_discrete(M, C, K, times, load_data, U0, V0))
     
  end   
 ```
@@ -781,9 +787,12 @@ function Example_dirac()
     # a negative at 5s.
     load_data[2] = ["dirac" 1.0 1.0 0.0; "dirac" -1.0 5.0 0.0]
 
+    # Discrete times
+    times = collect(range(start=0.0, stop=10.0, length=1000))
+
     # Evaluates the response using the Giffndof for discrete times
-    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
-    
+    response = real.(Solve_discrete(M, C, K, times, load_data, U0, V0))
+        
  end   
 ```
 
@@ -820,9 +829,12 @@ function Example_general()
     # And a -cos(5 t) at DOF 3
     load_data[3] = ["cosine" -1.0 (5.0/(2*pi)) 0.0 ]
 
+    # Discrete times
+    times = collect(range(start=0.0, stop=10.0, length=1000))
+
     # Evaluates the response using the Giffndof for discrete times
-    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
-    
+    response = real.(Solve_discrete(M, C, K, times, load_data, U0, V0))
+        
  end   
 ```
 
