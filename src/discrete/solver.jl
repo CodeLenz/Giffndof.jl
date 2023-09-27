@@ -84,16 +84,23 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
 
     # Check the conjugacy betwwwn CbF and F11
     norm_conjugacy = norm((CbF).-conj(F11))
+
+    # Initiliazes a flag to signal whether Cbf and F11 are conjugate or not
+    flag_CbFconjugate = false
+   
     if norm_conjugacy<tol
 
         # Calculates the exponential of Cb-F11 as the complex conjugate 
         # of the exponential of F11
-        expCF_delta = conj(expF11_delta)
+        expCF_delta = [0.0 0.0; 0.0 0.0]#conj(expF11_delta)
 
     else
 
         # Calculates the exponential of Cb-F11
         expCF_delta = exp(-dt*CbF)
+
+        # Updates the flag of conjugacy
+        flag_CbFconjugate = true
 
     end
 
@@ -161,14 +168,32 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
     C1, C2 = calculate_integrationConstants(C_bar, F11, n_excitedDOF, response[:,1], dy_p, U0, V0)
 
     # Iterates through the time span to add the homogeneous solution
-    for i=1:n_times
 
-        # Adds the homogeneous solution
-        @. response[:,i] += C1 + C2
+    # If the flag for conjugacy of CbF is on
+    if flag_CbFconjugate
+       
+        for i=1:n_times
+   
+            # Adds the homogeneous solution
+            @. response[:,i] += 2*real.(C2)
+   
+            # Updates C2
+            C2 .= expF11_delta*C2
+   
+        end
 
-        # Updates C1 and C2
-        C2 .= expF11_delta*C2
-        C1 .= expCF_delta*C1
+    else
+       
+        for i=1:n_times
+   
+            # Adds the homogeneous solution
+            @. response[:,i] += C1 + C2
+   
+            # Updates C1 and C2
+            C2 .= expF11_delta*C2
+            C1 .= expCF_delta*C1
+   
+        end
 
     end
 
