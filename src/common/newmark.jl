@@ -137,7 +137,7 @@ Solve the transient problem M(x)A(x,t) + C(x)V(x,t) + K(x,t)U(x,t) = F(t),
 using Newmark-beta method. 
 
     Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!::Function, 
-                  ts, verbose=false;
+                  times, verbose=false;
                   U0=Float64[], V0=Float64[],
                   β=1/4, γ=1/2)
 
