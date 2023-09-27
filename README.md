@@ -822,9 +822,8 @@ function Example_general()
     # Create the dictionary
     load_data = Dict{Int64,Matrix{Union{Float64,String}}}()
 
-    # Apply a Dirac's delta at 1s and a 3sin(4t) at DOF 2
-    # a negative at 5s.
-    load_data[2] = ["dirac" 1.0 1.0 0.0; "sine" 3.0 (4.0/(2*pi)) 0.0 ]
+    # Apply a Dirac's delta at 5s and a 3sin(4t) at DOF 2
+    load_data[2] = ["dirac" 1.0 5.0 0.0; "sine" 3.0 (4.0/(2*pi)) 0.0 ]
 
     # And a -cos(5 t) at DOF 3
     load_data[3] = ["cosine" -1.0 (5.0/(2*pi)) 0.0 ]
@@ -837,6 +836,5 @@ function Example_general()
         
  end   
 ```
-
 
 </details>
