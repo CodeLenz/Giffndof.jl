@@ -94,13 +94,13 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
         # of the exponential of F11
         expCF_delta = [0.0 0.0; 0.0 0.0]#conj(expF11_delta)
 
+        # Updates the flag of conjugacy
+        flag_CbFconjugate = true
+
     else
 
         # Calculates the exponential of Cb-F11
         expCF_delta = exp(-dt*CbF)
-
-        # Updates the flag of conjugacy
-        flag_CbFconjugate = true
 
     end
 
