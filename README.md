@@ -670,18 +670,161 @@ end
 
 A special method is provided if the user just wants the response $\mathbf{y}$ at a discrete set of times. The user can specify different types of loading at the same time using a dictionary and mix exponentials, polynomials and Dirac's deltas at the same time. There are substancial differences when compared to the previous methods.
 
-The load dictionary is given by 
+The load dictionary is given by
 
 ```julia
     load_data::Dict{Int64, Matrix{Union{String,Float64}}}
 ```
+
 where the Int64 is the loaded DOF (key), and the string can be "sin", "cos", "dirac" or "polynomial".
 
 The entries in the matrix depend on the type of excitation:
 
-For "sin" and "cos" the entries are ```A f d``` where $A$ is an amplitude, $f$ is a frequency in Hz and $d$ is a phase in degrees. 
+For "sin" and "cos" the entries are ```A f d``` where $A$ is an amplitude, $f$ is a frequency in Hz and $d$ is a phase in degrees.
+
+```julia
+using Giffndof
+function Example_exponential()
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    # Create the dictionary
+    load_data = Dict{Int64,Matrix{Union{Float64,String}}}()
+
+    # Apply a 3sin(4t) at the second dof    
+    load_data[2] = ["sine" 3.0 (4.0/(2*pi)) 0.0]
+
+    # Evaluates the response using the Giffndof for discrete times
+    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
+    
+ end   
+```
+
+For "polynomial" the entries are ```[c_k t_k k]``` where $k=0$ for the constant term, $k=1$ for the linear term and so on. 
+
+```julia
+using Giffndof
+function Example_exponential()
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    # Create the dictionary
+    load_data = Dict{Int64,Matrix{Union{Float64,String}}}()
+
+    # Apply the polynomial 10t - t^2, starting at t=0, to the second DOF
+    load_data[2] = ["polynomial" 10.0 0.0 1.0;  
+                    "polynomial" -1.0 0.0 2.0]
+
+    # Evaluates the response using the Giffndof for discrete times
+    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
+    
+ end   
+```
 
 For "dirac" the entries are ```[A t 0]``` where $A$ is an amplitude and $t$ is the activation time. The last position is not used.
 
-For "polynomial" the entries are ```[c t1]```
+```julia
+using Giffndof
+function Example_exponential()
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    # Create the dictionary
+    load_data = Dict{Int64,Matrix{Union{Float64,String}}}()
+
+    # Apply TWO Dirac's delta to the second DOF. A positive at 1s and 
+    # a negative at 5s.
+    load_data[2] = ["dirac" 1.0 1.0 0.0; "dirac" -1.0 5.0 0.0]
+
+    # Evaluates the response using the Giffndof for discrete times
+    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
+    
+ end   
+```
+
+On is not constrained to impose a single type of excitation when using the discrete solution. For example
+
+```julia
+using Giffndof
+function Example_exponential()
+
+    # Mass matrix
+    M = [2.0 0.0 0.0 ;
+         0.0 2.0 0.0 ;
+         0.0 0.0 1.0 ]
+
+    # Stiffness matrix
+    K = [6.0 -4.0  0.0 ;
+        -4.0  6.0 -2.0 ;
+         0.0 -2.0  6.0]*1E2
+
+    # Damping matrix
+    C = 1E-2*K
+
+    # Initial Conditions
+    U0  = [0.0; 0.0; 0.0]
+    V0  = [0.0; 0.0; 0.0]
+
+    # Create the dictionary
+    load_data = Dict{Int64,Matrix{Union{Float64,String}}}()
+
+    # Apply a Dirac's delta at 1s and a 3sin(4t) at DOF 2
+    # a negative at 5s.
+    load_data[2] = ["dirac" 1.0 1.0 0.0; "sine" 3.0 (4.0/(2*pi)) 0.0 ]
+
+    # And a -cos(5 t) at DOF 3
+    load_data[3] = ["cosine" -1.0 (5.0/(2*pi)) 0.0 ]
+
+    # Evaluates the response using the Giffndof for discrete times
+    response = real.(Solve_discrete(M, C, K, time_points,load_data, U0, V0))
+    
+ end   
+```
+
+
 </details>
