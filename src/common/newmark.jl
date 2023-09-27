@@ -104,15 +104,21 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     A_V[:,1] .= V0c[:]
     A_A[:,1] .= A0[:]
 
+    # Pre-allocates Arrays b, A, V and U
+    b = similar(A0)
+    A = similar(A0)
+    V = similar(A0)
+    U = similar(A0)
+
     # Main loop
     count = 2
     for t in tspan
 
             f!(t+Δt,F)
-            b = F .- K*U0c .-(C .+Δt*K)*V0c .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
-            A = luMN\b
-            V = V0c .+ Δt*( (1-γ)*A0 .+ γ*A )
-            U = U0c .+ Δt*V0c .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
+            b .= F .- K*U0c .-(C .+Δt*K)*V0c .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
+            A .= luMN\b
+            V .= V0c .+ Δt*( (1-γ)*A0 .+ γ*A )
+            U .= U0c .+ Δt*V0c .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
             
            # Store values at t+Δt
             A_t[count]    = t + Δt
@@ -239,15 +245,21 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     A_V[:,1] .= V0c[:]
     A_A[:,1] .= A0[:]
 
+    # Pre-allocates Arrays b, A, V and U
+    b = similar(A0)
+    A = similar(A0)
+    V = similar(A0)
+    U = similar(A0)
+
     # Main loop
     count = 2
     for t in times
 
             f!(t+Δt,F)
-            b = F .- K*U0c .-(C .+Δt*K)*V0c .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
-            A = luMN\b
-            V = V0c .+ Δt*( (1-γ)*A0 .+ γ*A )
-            U = U0c .+ Δt*V0c .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
+            b .= F .- K*U0c .-(C .+Δt*K)*V0c .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
+            A .= luMN\b
+            V .= V0c .+ Δt*( (1-γ)*A0 .+ γ*A )
+            U .= U0c .+ Δt*V0c .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
             
            # Store values at t+Δt
             A_t[count]    = t + Δt
