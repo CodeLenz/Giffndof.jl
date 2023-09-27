@@ -796,7 +796,7 @@ function Example_dirac()
  end   
 ```
 
-On is not constrained to impose a single type of excitation when using the discrete solution. For example
+One is not constrained to impose a single type of excitation when using the discrete solution. For example
 
 ```julia
 using Giffndof
