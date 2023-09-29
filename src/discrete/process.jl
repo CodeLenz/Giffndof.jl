@@ -8,8 +8,8 @@ excitations -> rotinas para as soluções particulares
 
 =#
 
-function Process(dimen, M, C, K, load_description,F11, C_bar, K_bar,
- input_vector, norm_conjugacy, expF11_delta, expCF_delta, CbF, tol)
+function Process(dimen, M, C, K, load_description, F11, C_bar, K_bar,
+ input_vector, tol, data_dirac)
    
        ##
        ## Exponential
@@ -249,32 +249,30 @@ function Process(dimen, M, C, K, load_description,F11, C_bar, K_bar,
         # of time applications
         diracs_timesNCoeffs = diracs_timesNCoeffs[:,sortperm(diracs_timesNCoeffs[2,:])]
 
-        # Adds the flag for conjugacy of Cb-F11 and F11
-        if norm_conjugacy<tol
+        # Updates the data structure for the Dirac excitation
 
-            # Creates the struct
-            data_dirac = dirac_dataStructConjugate(dimen, dir_nk,
-             diracs_timesNCoeffs[1,:], diracs_timesNCoeffs[2,:], dir_vj,
-             true, F11, expF11_delta)
+        data_dirac.nk = data_dirac.nk+dir_nk
 
-        else
+        data_dirac.c_jk = [data_dirac.c_jk; diracs_timesNCoeffs[1,:]]
 
-            # Creates the struct
-            data_dirac = dirac_dataStructNonConjugate(dimen, dir_nk,
-             diracs_timesNCoeffs[1,:], diracs_timesNCoeffs[2,:], dir_vj,
-             false, F11, CbF, expF11_delta, expCF_delta)
+        data_dirac.t_jk = [data_dirac.t_jk; diracs_timesNCoeffs[2,:]]
 
-        end
+        # As the vector v_j is unique for all the Dirac's impulses in a 
+        # single DOF, there is no need to store v_j redundantly many ti-
+        # mes for the same DOF, thus, a vector of indexes for v_j is 
+        # created. In this vector, for each component, which corresponds
+        # to a impulse in any DOF, there is the index for its relative
+        # v_j in the matrix of v_j vectors
 
-    else
+        data_dirac.indexes_vj = [data_dirac.indexes_vj; Int.((size(
+         data_dirac.v_j,2)+1)*ones(dir_nk))]
 
-        data_dirac = dirac_dataStructConjugate(dimen, dir_nk,[0.0;0.0], [0.0;0.0], [0.0;0.0], true, [0.0 0.0], [0.0 0.0])
-
+        data_dirac.v_j = [data_dirac.v_j dir_vj]
 
     end
 
     # Returns the dictionary  
-    return data_exponential, data_polynomial, data_dirac, flag_exp, flag_pol, flag_dir
+    return data_exponential, data_polynomial, data_dirac, flag_exp, flag_pol
    
    end
    

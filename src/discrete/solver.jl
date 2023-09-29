@@ -82,28 +82,6 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
     # Calculates CbF 
     CbF = C_bar .- F11
 
-    # Check the conjugacy betwwwn CbF and F11
-    norm_conjugacy = norm((CbF).-conj(F11))
-
-    # Initiliazes a flag to signal whether Cbf and F11 are conjugate or not
-    flag_CbFconjugate = false
-   
-    if norm_conjugacy<tol
-
-        # Calculates the exponential of Cb-F11 as the complex conjugate 
-        # of the exponential of F11
-        expCF_delta = [0.0 0.0; 0.0 0.0]#conj(expF11_delta)
-
-        # Updates the flag of conjugacy
-        flag_CbFconjugate = true
-
-    else
-
-        # Calculates the exponential of Cb-F11
-        expCF_delta = exp(-dt*CbF)
-
-    end
-
     # Initializes the matrix of the response
     response = zeros(ComplexF64, dimen, n_times)
 
@@ -113,6 +91,24 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
     # Creates the input vector
     input_vector = zeros(dimen)
 
+    # Initializes the data structure for Dirac excitation and checks if
+    # F11 is complex
+    
+    complex_partF11 = norm(imag(F11))
+    
+    if complex_partF11>0
+
+        data_dirac = dirac_dataStruct(dimen, 0, Float64[], Float64[], 
+        zeros(ComplexF64, dimen, 1), Int64[])
+
+    else
+
+        # Initializes the data structure for Dirac excitation
+        data_dirac = dirac_dataStruct(dimen, 0, Float64[], Float64[], 
+        zeros(Float64, dimen, 1), Int64[])
+
+    end
+
     # Iterates through the excited DOFs
     for i=1:n_excitedDOF
 
@@ -120,9 +116,9 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
         input_vector[excited_dofs[i]] = 1.0
 
         # Build the dictionary of data for the particular solution
-        data_exponential, data_polynomial, data_dirac, flag_exp, flag_pol, flag_dir = Process(
+        data_exponential, data_polynomial, data_dirac, flag_exp, flag_pol = Process(
          dimen,M,C,K,load_data[excited_dofs[i]], F11, C_bar, K_bar,
-         input_vector, norm_conjugacy, expF11_delta, expCF_delta, CbF, tol)
+         input_vector, tol, data_dirac)
 
         # If the exponential particular solution is required
         if flag_exp 
@@ -146,54 +142,34 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
 
         end
 
-        # If the exponential particular solution is required
-        if flag_dir 
-
-            # Updates the matrix of response
-            dirac_particularResponse(times,n_times,data_dirac,response,tol)
-
-            # Updates the vector of the derivative of the response at time t0
-            dirac_derivativeParticular(t0,data_dirac,dy_p)
-
-        end
-
         # UnSet the DOF
         input_vector[excited_dofs[i]] = 0.0
 
-
     end
 
-    # Calcualtes integrating constants for homogeneous initial condi-
+    # Calculates integrating constants for homogeneous initial condi-
     # tions at t0=0
-    C1, C2 = calculate_integrationConstants(C_bar, F11, n_excitedDOF, response[:,1], dy_p, U0, V0)
+    C1, C2 = calculate_integrationConstants(C_bar, F11, response[:,1], dy_p, U0, V0)
 
-    # Iterates through the time span to add the homogeneous solution
+    # Adds the response due to Dirac's delta and the homogeneous solu-
+    # tion. If there is no Dirac's delta excitation, adds the homoge-
+    # neous response only
 
-    # If the flag for conjugacy of CbF is on
-    if flag_CbFconjugate
-       
-        for i=1:n_times
+    # Check the conjugacy between CbF and F11
+    norm_conjugacy = norm((CbF).-conj(F11))
    
-            # Adds the homogeneous solution
-            @. response[:,i] += 2*real.(C2)
-   
-            # Updates C2
-            C2 .= expF11_delta*C2
-   
-        end
+    if norm_conjugacy<tol
+
+        dirac_particularResponseConjugate(times, n_times, data_dirac,
+         response, C2, F11, expF11_delta, tol)
 
     else
-       
-        for i=1:n_times
-   
-            # Adds the homogeneous solution
-            @. response[:,i] += C1 + C2
-   
-            # Updates C1 and C2
-            C2 .= expF11_delta*C2
-            C1 .= expCF_delta*C1
-   
-        end
+
+        # Calculates the exponential of Cb-F11
+        expCF_delta = exp(-dt*CbF)
+
+        dirac_particularResponseNotConjugate(times, n_times, data_dirac,
+         response, C2, C1, F11, CbF, expF11_delta, expCF_delta, tol)
 
     end
 
@@ -201,5 +177,3 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
     return response
 
 end
-
-

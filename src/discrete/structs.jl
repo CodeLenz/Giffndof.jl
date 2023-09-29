@@ -36,8 +36,8 @@ struct polynomial_dataStruct{T,C}
 
 end
 
-# Dirac's delta when F11 and C_bar-F11 are complex-conjugate
-struct dirac_dataStructConjugate{T,C}
+# Dirac's delta
+mutable struct dirac_dataStruct{T,C}
 
     # Defines the problem's dimensionality
     dimen::Int64
@@ -51,47 +51,11 @@ struct dirac_dataStructConjugate{T,C}
     t_jk::Vector{T}
 
     # Defines a vector to store the vector ((C-(2*M*F11))\input_vector)
-    v_j::Vector{C}
+    v_j::Matrix{C}
 
-    # Defines a flag to signal whether F11 and C_bar-F11 are complex-conjugates or not
-    flag_conjugacy::Bool
+    # Defines a vector of indexes for the vectors v_j in the matrix of 
+    # v_j vector
 
-    # Defines a matrix to F11
-    F11::Matrix{C}
-
-    # Defines a matrix to store the exponentials
-    expF11_delta::Matrix{C}
-
-end
-
-# Dirac's delta when F11 and C_bar-F11 are not complex-conjugate
-struct dirac_dataStructNonConjugate{T,C}
-
-    # Defines the problem's dimensionality
-    dimen::Int64
-
-    # Defines a counter of delta terms
-    nk::Int64
-
-    # Defines the vectors of coefficients c_jk and time shifts t_jk
-    c_jk::Vector{T}
-
-    t_jk::Vector{T}
-
-    # Defines a vector to store the vector ((C-(2*M*F11))\input_vector)
-    v_j::Vector{C}
-
-    # Defines a flag to signal whether F11 and C_bar-F11 are complex-conjugates or not
-    flag_conjugacy::Bool
-
-    # Defines a matrix to F11
-    F11::Matrix{C}
-
-    # Defines a matrix to C_bar-F11
-    CbF::Matrix{C}
-
-    # Defines matrix exponentials
-    expF11_delta::Matrix{C}
-    expCF_delta::Matrix{C}
+    indexes_vj::Vector{Int64}
 
 end
