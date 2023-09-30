@@ -215,13 +215,11 @@ function Process(dimen, M, C, K, load_description, F11, C_bar, K_bar,
     # Saves the struct for the exponential function
     if flag_exp 
 
-        data_exponential = exponential_dataStruct(exp_nk, exp_c_jk,
-         exp_beta_jk, exp_phi_jk, matrix_kjk[:,2:end])
+        data_exponential = exponential_dataStruct(exp_nk, exp_c_jk, exp_beta_jk, exp_phi_jk, matrix_kjk[:,2:end])
 
     else 
 
-        data_exponential = exponential_dataStruct(exp_nk, [0.0],
-        [0.0], [0.0], [0.0 0.0])
+        data_exponential = exponential_dataStruct(exp_nk, [0.0], [0.0], [0.0], [0.0 0.0])
 
     end
 
@@ -264,8 +262,7 @@ function Process(dimen, M, C, K, load_description, F11, C_bar, K_bar,
         # to a impulse in any DOF, there is the index for its relative
         # v_j in the matrix of v_j vectors
 
-        data_dirac.indexes_vj = [data_dirac.indexes_vj; Int.((size(
-         data_dirac.v_j,2)+1)*ones(dir_nk))]
+        data_dirac.indexes_vj = [data_dirac.indexes_vj; Int.((size(data_dirac.v_j,2)+1)*ones(dir_nk))]
 
         data_dirac.v_j = [data_dirac.v_j dir_vj]
 
