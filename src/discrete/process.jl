@@ -8,8 +8,7 @@ excitations -> rotinas para as soluções particulares
 
 =#
 
-function Process(dimen, M, C, K, load_description, F11, C_bar, K_bar,
- input_vector, tol, data_dirac)
+function Process(dimen, M, C, K, load_description, F11, C_bar, K_bar, input_vector, tol, data_dirac)
    
        ##
        ## Exponential
