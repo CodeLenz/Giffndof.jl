@@ -37,7 +37,7 @@ function Solve_heaviside2(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     chol = cholesky(Symmetric(M))
     Kb = chol\K
     Cb = chol\C
-    F211 = 0.5*Cb + 0.5*sqrt(Cb^2 - 4*Kb)
+    F211 = 0.5*Cb + 0.5*sqrt(Cb*Cb - 4*Kb)
 
     # Pre-evaluate matrices needed to compute the permanente solution
     CbF = Cb - F211
@@ -48,11 +48,13 @@ function Solve_heaviside2(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     # M01 = CbF^(-1)
     M01 = lu(CbF) #CbF \ Matrix{eltype(CbF)}(I, size(CbF)...)
 
+    CbF2 = CbF*CbF
+
     # M02 = CbF^(-2)
-    M02 = lu(CbF*CbF)   #M01*M01
+    M02 = lu(CbF2)   #M01*M01
 
     # M03 = CbF^(-3)
-    M03 = lu(CbF^3) #M02*M01
+    M03 = lu(CbF*CbF2) #M02*M01
 
     # M1 = F211^(-1)
     M1 = Array(F211)^(-1) #\ Matrix{eltype(F211)}(I, size(F211)...)

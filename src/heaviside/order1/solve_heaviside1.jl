@@ -37,7 +37,7 @@ function Solve_heaviside1(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     chol = cholesky(Symmetric(M))
     Kb = chol\K
     Cb = chol\C
-    F211 = 0.5*Cb + 0.5*sqrt(Cb^2 - 4*Kb)
+    F211 = 0.5*Cb + 0.5*sqrt(Cb*Cb - 4*Kb)
 
     # Pre-evaluate matrices needed to compute the permanente solution
     CbF = Cb - F211

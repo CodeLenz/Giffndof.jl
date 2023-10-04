@@ -74,7 +74,7 @@ function Solve_discrete(M::AbstractMatrix{TF},C::AbstractMatrix{TF},K::AbstractM
     K_bar = Array(choleskyM\K)
 
     # Calculates F211
-    F11 = 0.5*(C_bar.+sqrt((C_bar^2).-(4*K_bar)))
+    F11 = 0.5*(C_bar.+sqrt((C_bar*C_bar).-(4*K_bar)))
 
     # Calculates the exponential of F11 multiplied by a delta
     expF11_delta = exp(-F11*dt)

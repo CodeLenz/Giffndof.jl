@@ -40,7 +40,7 @@ function Solve_polynomial(M::AbstractMatrix{T}, C::AbstractMatrix{T},K::Abstract
     chol = cholesky(Symmetric(M))
     Kb = chol\K
     Cb = chol\C
-    F211 = 0.5*Cb + 0.5*sqrt(Cb^2 - 4*Kb)
+    F211 = 0.5*Cb + 0.5*sqrt(Cb*Cb - 4*Kb)
 
     # Evaluate FC (Auxiliary matrix to avoid repeated computation)
     FCb = F211 .- Cb
