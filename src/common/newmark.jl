@@ -88,22 +88,18 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
 
     # Initial acceleration
     f!(0.0,F)
-    A0 = M\(F- K*U0c -C*V0c)
+    A0 = M\(F .- K*U0c .- C*V0c)
 
     # Arrays to monitor the solution. The number of time points is 
     # tspan / dt + 1.
     ndofs = nfull
     A_t = Vector{Float64}(undef,nt+1)
     A_U = Array{Float64}(undef,ndofs,nt+1)
-    A_V = Array{Float64}(undef,ndofs,nt+1)
-    A_A = Array{Float64}(undef,ndofs,nt+1)
-
+    
     # Store initial values (time zero)
     A_t[1]    = t0
     A_U[:,1] .= U0c[:]
-    A_V[:,1] .= V0c[:]
-    A_A[:,1] .= A0[:]
-
+    
     # Pre-allocates Arrays b, A, V and U
     b = similar(A0)
     A = similar(A0)
@@ -123,8 +119,6 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
            # Store values at t+Δt
             A_t[count]    = t + Δt
             A_U[:,count] .= U[:]
-            A_V[:,count] .= V[:]
-            A_A[:,count] .= A[:]
             count += 1
 
             U0c .= U
@@ -133,7 +127,7 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     end
 
     # Return the values 
-    return A_U, A_V, A_A, A_t
+    return A_U, A_t
 
 end
 
