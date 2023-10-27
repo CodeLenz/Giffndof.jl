@@ -16,7 +16,7 @@ function Process(tspan::Tuple{Float64,Float64}, dt::Float64, Example::Function,
     Y = reshape([real(y(t))[k] for k=1:ndofs for t in tt],length(tt),ndofs)
 
     # Solve by using Newmark - Beta method
-    U,V,A,T = Solve_newmark(M, C, K, f!, tspan, dt, U0=U0, V0=V0)
+    U,T = Solve_newmark(M, C, K, f!, tspan, dt, U0=U0, V0=V0)
 
     # Return the solutions
     return T, Y, U    
