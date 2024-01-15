@@ -106,12 +106,17 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     V = similar(A0)
     U = similar(A0)
 
+    # Pre-allocates some common matrix sums in the loop
+    CKdt = C .+Δt*K
+
+    CKbetadt = (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)
+
     # Main loop
     count = 2
     for t in tspan
 
             f!(t+Δt,F)
-            b .= F .- K*U0c .-(C .+Δt*K)*V0c .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
+            b .= F .- K*U0c .-CKdt*V0c .- CKbetadt*A0
             A .= luMN\b
             V .= V0c .+ Δt*( (1-γ)*A0 .+ γ*A )
             U .= U0c .+ Δt*V0c .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
@@ -241,12 +246,17 @@ function Solve_newmark(M::AbstractMatrix,C::AbstractMatrix,K::AbstractMatrix, f!
     V = similar(A0)
     U = similar(A0)
 
+    # Pre-allocates some common matrix sums in the loop
+    CKdt = C .+Δt*K
+
+    CKbetadt = (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)
+
     # Main loop
     count = 2
     for t in times
 
             f!(t+Δt,F)
-            b .= F .- K*U0c .-(C .+Δt*K)*V0c .- (C*Δt*(1-γ) .+ K*(1/2-β)*Δt^2)*A0
+            b .= F .- K*U0c .-CKdt*V0c .- CKbetadt*A0
             A .= luMN\b
             V .= V0c .+ Δt*( (1-γ)*A0 .+ γ*A )
             U .= U0c .+ Δt*V0c .+ ( (1/2-β)*A0 .+ β*A )*Δt^2
