@@ -1,0 +1,33 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Giffndof
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Eduardo
+    family-names: Lenz Cardoso
+    email: eduardo.cardoso@udesc.br
+    orcid: 'https://orcid.org/0000-0002-3634-3916'
+    affiliation: UDESC
+  - given-names: Matheus
+    family-names: Janczkowski Fogaça
+    email: matheusj2009@hotmail.com
+    affiliation: UDESC
+    orcid: 'https://orcid.org/0000-0003-4513-0290'
+identifiers:
+  - type: url
+    value: 'https://github.com/CodeLenz/Giffndof.jl'
+repository-code: 'https://github.com/CodeLenz/Giffndof.jl'
+url: 'https://github.com/CodeLenz/Giffndof.jl'
+abstract: >-
+  This repository contains the computer implementation of
+  the solution procedures developed in "A systematic
+  approach to obtain the analytical solution for coupled
+  linear second-order ordinary differential equations: Part
+  II " for solving coupled systems of second order ODEs with
+  constant coefficients
+license: MIT
