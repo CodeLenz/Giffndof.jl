@@ -5,7 +5,7 @@
 
 # Generalized Integrating Factor for NDOFs
 
-This repository contains the computer implementation of the solution procedures developed in **to be included** 
+This repository contains the computer implementation of the solution procedures developed in **A systematic approach to obtain the analytical solution for coupled linear second-order ordinary differential equations: Part II** 
 for solving coupled systems of second order ODEs with constant coefficients
 
  $M A(t) + C V(t) + K Y(t) = F(t)$
